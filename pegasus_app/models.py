@@ -17,17 +17,16 @@ class PhoneNumberCheckConfig(models.Model):
 
 
 class ScheduleDay(models.Model):
-    DAYS_OF_WEEK = (
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
-        (5, 'Saturday'),
-        (6, 'Sunday'),
-    )
+    class ScheduleDayType(models.TextChoices):
+        MONDAY = 'Monday'
+        TUESDAY = 'Tuesday'
+        WEDNESDAY = 'Wednesday'
+        THURSDAY = 'Thursday'
+        FRIDAY = 'Friday'
+        SATURDAY = 'Saturday'
+        SUNDAY = 'Sunday'
 
-    day = models.CharField(max_length=1, choices=DAYS_OF_WEEK)
+    day = models.CharField(max_length=32, choices=ScheduleDayType.choices)
     open_time = models.TimeField(auto_now=False, auto_now_add=False)
     close_time = models.TimeField(auto_now=False, auto_now_add=False)
     phone = models.ForeignKey('PhoneNumberCheckConfig', on_delete=models.CASCADE)
