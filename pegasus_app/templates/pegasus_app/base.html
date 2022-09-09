@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div style="display: flex">
+<nav class="nav flex-column">
+    <ul style="list-style-type: none">
+        <h2 style="font-size: 0.8rem;
+    color: gray;">Application</h2>
+        <li><a class="nav-link active" aria-current="page" href="#">Dashboard</a></li>
+        <li><a class="nav-link" href="#">Schedule</a></li>
+        <li><a class="nav-link" href="#">Subscription Demo</a></li>
+    </ul>
+
+    <ul style="list-style-type: none">
+        <h2 style="font-size: 0.8rem;
+    color: gray;">My Account</h2>
+        <li><a class="nav-link" href="#">Subscription</a></li>
+        <li><a class="nav-link" href="#">Profile</a></li>
+        <li><a class="nav-link" href="#">Change Password</a></li>
+        <li><a class="nav-link" href="#">Sing out</a></li>
+    </ul>
+
+</nav>
+        {% block body %}
+
+        {% endblock body %}
+</div>
+</body>
+</html>

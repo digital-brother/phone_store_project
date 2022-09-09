@@ -1,11 +1,18 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    ...
 
 
 class UserPlan(models.Model):
     max_phones_numbers = models.IntegerField()
     name = models.CharField(max_length=32)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True, related_name='plan')
 
 
 class PhoneNumberCheckConfig(models.Model):
@@ -13,7 +20,11 @@ class PhoneNumberCheckConfig(models.Model):
     phone = PhoneNumberField()
     failure_threshold = models.IntegerField(validators=[MaxValueValidator(10)])
     test_frequency = models.IntegerField(validators=[MaxValueValidator(120)])
-    user_plan = models.ForeignKey('User', on_delete=models.CASCADE)
+
+    user_plan = models.ForeignKey('UserPlan', on_delete=models.CASCADE, related_name='xx')
+
+    def __str__(self):
+        return f'Call Check {self.phone}'
 
 
 class ScheduleDay(models.Model):
@@ -29,4 +40,5 @@ class ScheduleDay(models.Model):
     day = models.CharField(max_length=32, choices=ScheduleDayType.choices)
     open_time = models.TimeField(auto_now=False, auto_now_add=False)
     close_time = models.TimeField(auto_now=False, auto_now_add=False)
-    phone = models.ForeignKey('PhoneNumberCheckConfig', on_delete=models.CASCADE)
+
+    phone_config = models.ForeignKey('PhoneNumberCheckConfig', on_delete=models.CASCADE, related_name='schedules')

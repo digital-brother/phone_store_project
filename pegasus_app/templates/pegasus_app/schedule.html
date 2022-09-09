@@ -1,0 +1,95 @@
+{% extends 'pegasus_app/base.html' %}
+
+{% block body %}
+<div style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; width: 83%;     padding: 0 30px;">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="d-flex flex-column">
+            <label>IMA Name
+            </label>
+            <input type="text" name="ima_name" id="id_ima_name">
+            <label>Phone Number with code area
+            </label>
+            <input type="tel" name="phone" maxlength="128" required="" id="id_phone">
+            <label>Failure Threshold</label>
+            <input type="range" name="failure_threshold" min="1" max="10" required="" id="id_failure_threshold">
+            <label>Call Frequency</label>
+            <input type="range" name="test_frequency" min="10" max="120" step="5" required="" id="id_test_frequency">
+        </div>
+        <h4>Scheduling</h4>
+        <div class="d-flex">
+            <div style="display: flex;
+    flex-direction: column;">
+                <label>Monday</label>
+                <input type="checkbox" id="id_schedules-0-day" name="schedules-0-day" value="Monday">
+                <label>Open</label>
+                <input type="time" id="id_schedules-0-open_time" name="schedules-0-open_time">
+                <label>Close</label>
+                <input type="time" name="schedules-0-close_time" style="margin-bottom: 20px">
+            </div>
+            <div style="display: flex;
+    flex-direction: column; margin: 0 50px">
+                <label>Tuesday</label>
+                <input type="checkbox" id="id_schedules-1-day" name="schedules-1-day" value="Tuesday">
+                <label>Open</label>
+                <input type="time"  name="schedules-1-open_time">
+                <label>Close</label>
+                <input type="time" name="schedules-1-close_time" style="margin-bottom: 20px">
+            </div>
+            <div style="display: flex;
+    flex-direction: column; margin: 0 50px">
+                <label>Wednesday</label>
+                <input type="checkbox" id="id_schedules-2-day" name="schedules-2-day" value="Wednesday">
+                <label>Open</label>
+                <input type="time" id="id_schedules-2-open_time" name="schedules-2-open_time">
+                <label>Close</label>
+                <input type="time" id="id_schedules-2-close_time" name="schedules-2-close_time" style="margin-bottom: 20px">
+            </div>
+            <div style="display: flex;
+    flex-direction: column; margin: 0 50px">
+                <label>Thursday</label>
+                <input type="checkbox" id="id_schedules-3-day" name="schedules-3-day" name="Thursday">
+                <label>Open</label>
+                <input type="time" id="id_schedules-3-open_time" name="schedules-3-open_time">
+                <label>Close</label>
+                <input type="time" id="id_schedules-3-close_time" name="schedules-3-close_time" style="margin-bottom: 20px">
+            </div>
+            <div style="display: flex;
+    flex-direction: column; margin: 0 50px">
+                <label>Friday</label>
+                <input type="checkbox" name="schedules-4-day" name="Friday">
+                <label>Open</label>
+                <input type="time" name="schedules-4-open_time">
+                <label>Close</label>
+                <input type="time" name="schedules-4-close_time" style="margin-bottom: 20px">
+            </div>
+            <div style="display: flex;
+    flex-direction: column; margin: 0 50px">
+                <label>Saturday</label>
+                <input type="checkbox" name="schedules-5-day" name="Saturday">
+                <label>Open</label>
+                <input type="time" name="schedules-5-open_time">
+                <label>Close</label>
+                <input type="time" name="schedules-5-close_time" style="margin-bottom: 20px">
+            </div>
+            <div style="display: flex;
+    flex-direction: column; margin: 0 50px">
+                <label>Sunday</label>
+                <input type="checkbox" name="schedules-6-day" value="Sunday">
+                <label>Open</label>
+                <input type="time" name="schedules-6-open_time">
+                <label>Close</label>
+                <input type="time" name="schedules-6-close_time" style="margin-bottom: 20px">
+            </div>
+
+        </div>
+<!--{% for form in schedule_config %}-->
+<!--{{ form.as_p }}-->
+<!--{% endfor %}-->
+        <button type="submit">SUBMIT</button>
+    </form>
+</div>
+
+
+
+{% endblock body %}
