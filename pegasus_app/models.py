@@ -42,3 +42,5 @@ class ScheduleDay(models.Model):
     close_time = models.TimeField(auto_now=False, auto_now_add=False)
 
     phone_config = models.ForeignKey('PhoneNumberCheckConfig', on_delete=models.CASCADE, related_name='schedules')
+
+
