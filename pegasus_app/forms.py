@@ -9,10 +9,6 @@ class PhoneNumberCheckConfigForm(forms.ModelForm):
         fields = ['ima_name', 'phone', 'failure_threshold', 'test_frequency']
 
 
-SchedulesDayFormset = forms.inlineformset_factory(PhoneNumberCheckConfig, ScheduleDay, fields='__all__', extra=1,
-                                                  widgets={
-                                                      'day': forms.CheckboxSelectMultiple(attrs={
-                                                          'value': 'checkbox',
-
-                                                      }, )
-                                                  })
+SchedulesDayFormset = forms.inlineformset_factory(PhoneNumberCheckConfig, ScheduleDay,
+                                                  fields=('day', 'is_active', 'open_time', 'close_time'), extra=7,
+                                                  can_delete=False, exclude=['id'])

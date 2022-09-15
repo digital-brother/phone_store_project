@@ -3,13 +3,18 @@
 {% block body %}
 
 <style type="text/css">
-        .selectt {
+        .select {
             display: none;
         }
 
-       .selected {
-       width: 55px;
-       }
+        .selected {
+        display: flex;
+        flex-direction: column;
+        }
+
+
+
+
 
 
 
@@ -20,106 +25,74 @@
 <div style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; width: 83%;     padding: 0 30px;">
     <form method="POST">
         {% csrf_token %}
+        {{ config_form.as_p }}
         <div class="d-flex flex-column">
-            <label>IMA Name
-            </label>
-            <input type="text" name="ima_name" id="id_ima_name">
-            <label>Phone Number with code area
-            </label>
-            <input type="tel" name="phone" maxlength="128" required="" id="id_phone">
-            <label>Failure Threshold</label>
-            <input type="range" name="failure_threshold" min="1" max="10" required="" id="id_failure_threshold">
-            <label>Call Frequency</label>
-            <input type="range" name="test_frequency" min="10" max="120" step="5" required="" id="id_test_frequency">
+            <!--            <label>IMA Name-->
+            <!--            </label>-->
+            <!--            <input type="text" value="" name="ima_name" id="id_ima_name">-->
+            <!--            <label>Phone Number with code area-->
+            <!--            </label>-->
+            <!--            <input type="tel" name="phone" maxlength="128" required="" id="id_phone">-->
+<!--            <div>-->
+<!--                <label>Failure Threshold</label>-->
+<!--                <input type="range" name="failure_threshold" min="1" max="10" required="" id="id_failure_threshold"-->
+<!--                       oninput="id_output_failure_threshold.value = id_failure_threshold.value">-->
+<!--                <output name="output_failure_threshold" id="id_output_failure_threshold">Notify after 4 failures-->
+<!--                </output>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <label>Call Frequency</label>-->
+<!--                <input type="range" name="call_frequency" min="10" max="120" step="5" required="" id="id_call_frequency"-->
+<!--                       oninput="id_output_call_frequency.value = id_call_frequency.value">-->
+<!--                <output name="output_call_frequency" id="id_output_call_frequency">Check every 10 minutes (10 to 120)-->
+<!--                </output>-->
+<!--            </div>-->
         </div>
         <h4>Scheduling</h4>
         <div class="d-flex">
-            <div style="display: flex; flex-direction: column;">
-<!--                {% for form in schedule_config %}-->
-                <label for="id_schedules-0-day">Monday</label>
-                <input class="selected"  type="checkbox" id="id_schedules-0-day" name="schedules-0-day" value="checkbox">
-                <label>
-                    <div class="checkbox selectt">
-                                            <label  for="id_schedules-0-open_time">Open</label>
-                    <input  type="time" name="schedules-0-open_time"
-                           id="id_schedules-0-open_time">
-                    <label  for="id_schedules-0-close_time">Close</label>
-                    <input  type="time" name="schedules-0-close_time"
-                           id="id_schedules-0-close_time"
-                           style="margin-bottom: 20px">
-                    </div>
 
-<!--                    {% endfor %}-->
-                    <!--            <div style="display: flex;-->
-                    <!--    flex-direction: column; margin: 0 50px">-->
-                    <!--                <label for="id_schedules-1-day">Tuesday</label>-->
-                    <!--                <input type="checkbox" id="id_schedules-1-day" name="schedules-1-day" value="Tuesday">-->
-                    <!--                <label for="id_schedules-1-open_time">Open</label>-->
-                    <!--                <input type="time" name="schedules-1-open_time" id="id_schedules-1-open_time">-->
-                    <!--                <label for="id_schedules-1-close_time">Close</label>-->
-                    <!--                <input type="time" name="schedules-1-close_time" id="id_schedules-1-close_time" style="margin-bottom: 20px">-->
-                    <!--            </div>-->
-                    <!--            <div style="display: flex;-->
-                    <!--    flex-direction: column; margin: 0 50px">-->
-                    <!--                <label for="id_schedules-2-day">Wednesday</label>-->
-                    <!--                <input type="checkbox" id="id_schedules-2-day" name="schedules-2-day" value="Wednesday">-->
-                    <!--                <label for="id_schedules-2-open_time">Open</label>-->
-                    <!--                <input type="time" name="schedules-2-open_time" id="id_schedules-2-open_time">-->
-                    <!--                <label for="id_schedules-2-close_time">Close</label>-->
-                    <!--                <input type="time" name="schedules-2-close_time" id="id_schedules-2-close_time" style="margin-bottom: 20px">-->
-                    <!--            </div>-->
-                    <!--            <div style="display: flex;-->
-                    <!--    flex-direction: column; margin: 0 50px">-->
-                    <!--                <label for="id_schedules-3-day">Thursday</label>-->
-                    <!--                <input type="checkbox" id="id_schedules-3-day" name="schedules-4-day" name="Thursday">-->
-                    <!--                <label for="id_schedules-3-open_time">Open</label>-->
-                    <!--                <input type="time" name="schedules-3-open_time" id="id_schedules-3-open_time">-->
-                    <!--                <label for="id_schedules-3-close_time">Close</label>-->
-                    <!--                <input type="time" name="schedules-3-close_time" id="id_schedules-3-close_time" style="margin-bottom: 20px">-->
-                    <!--            </div>-->
-                    <!--            <div style="display: flex;-->
-                    <!--    flex-direction: column; margin: 0 50px">-->
-                    <!--                <label for="id_schedules-4-day">Friday</label>-->
-                    <!--                <input type="checkbox" id="id_schedules-4-day" name="schedules-4-day" name="Friday">-->
-                    <!--                <label for="id_schedules-4-open_time">Open</label>-->
-                    <!--                <input type="time" name="schedules-4-open_time" id="id_schedules-4-open_time">-->
-                    <!--                <label for="id_schedules-4-close_time">Close</label>-->
-                    <!--                <input type="time" name="schedules-4-close_time" id="id_schedules-4-close_time" style="margin-bottom: 20px">-->
-                    <!--            </div>-->
-                    <!--            <div style="display: flex;-->
-                    <!--    flex-direction: column; margin: 0 50px">-->
-                    <!--                <label for="id_schedules-5-day">Saturday</label>-->
-                    <!--                <input type="checkbox" id="id_schedules-5-day" name="schedules-5-day" name="Saturday">-->
-                    <!--                <label for="id_schedules-5-open_time">Open</label>-->
-                    <!--                <input type="time" name="schedules-5-open_time" id="id_schedules-5-open_time">-->
-                    <!--                <label for="id_schedules-5-close_time">Close</label>-->
-                    <!--                <input type="time" name="schedules-5-close_time" id="id_schedules-5-close_time" style="margin-bottom: 20px">-->
-                    <!--            </div>-->
-                    <!--            <div style="display: flex;-->
-                    <!--    flex-direction: column; margin: 0 50px">-->
-                    <!--                <label for="id_schedules-6-day">Sunday</label>-->
-                    <!--                <input type="checkbox" id="id_schedules-6-day" name="schedules-6-day" value="Sunday">-->
-                    <!--                <label for="id_schedules-6-open_time">Open</label>-->
-                    <!--                <input type="time" name="schedules-6-open_time" id="id_schedules-6-open_time">-->
-                    <!--                <label for="id_schedules-6-close_time">Close</label>-->
-                    <!--                <input type="time" name="schedules-6-close_time" id="id_schedules-6-close_time" style="margin-bottom: 20px">-->
+            {{ schedule_formset.management_form }}
+            {% for form in schedule_formset %}
 
+            <div class="d-flex flex-column" style="margin-right: 60px;">
+                {{ form.id }}
+                {{ form.day }}
+                {{ form.is_active }}
+
+                <div class="{{ form.is_active.html_name }} select">
+                    <!--                    <label for="{{ form.open_time.id_for_label }}">Open</label>-->
+                    <!--                    <input type="time" name="{{ form.open_time.html_name }}"-->
+                    <!--                           id="{{ form.open_time.id_for_label }}">-->
+                    <!--                    <label for="{{ form.close_time.id_for_label }}">Close</label>-->
+                    <!--                    <input type="time" name="{{ form.close_time.html_name }}"-->
+                    <!--                           id="{{ form.close_time.id_for_label }}"-->
+                    <!--                           style="margin-bottom: 20px">-->
+                    {{ form.open_time }}
+                    {{ form.close_time}}
+                </div>
             </div>
+            {% endfor %}
 
         </div>
         <button type="submit">SUBMIT</button>
-    </form>
-    <script type="text/javascript">
+</div>
+
+</form>
+<script type="text/javascript">
    $(document).ready(function() {
     $('input[type="checkbox"]').click(function() {
-     var inputValue = $(this).attr("value");
-     $("." + inputValue).toggle();
+     var inputValue = $(this).attr("name");
+     $("." + inputValue).toggleClass('selected');
+
     });
    });
 
 
 
-    </script>
+
+
+
+</script>
 </div>
 
 

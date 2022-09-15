@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from pegasus_app.models import PhoneNumberCheckConfig, ScheduleDay, UserPlan
+
+admin.site.register(PhoneNumberCheckConfig)
+admin.site.register(ScheduleDay)
+admin.site.register(UserPlan)
+
