@@ -21,11 +21,13 @@
 
 
 
+
+
 </style>
 <div style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; width: 83%;     padding: 0 30px;">
     <form method="POST">
         {% csrf_token %}
-        {{ config_form.as_p }}
+        {{ phone_config_form.as_p }}
         <div class="d-flex flex-column">
             <!--            <label>IMA Name-->
             <!--            </label>-->
@@ -33,45 +35,137 @@
             <!--            <label>Phone Number with code area-->
             <!--            </label>-->
             <!--            <input type="tel" name="phone" maxlength="128" required="" id="id_phone">-->
-<!--            <div>-->
-<!--                <label>Failure Threshold</label>-->
-<!--                <input type="range" name="failure_threshold" min="1" max="10" required="" id="id_failure_threshold"-->
-<!--                       oninput="id_output_failure_threshold.value = id_failure_threshold.value">-->
-<!--                <output name="output_failure_threshold" id="id_output_failure_threshold">Notify after 4 failures-->
-<!--                </output>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <label>Call Frequency</label>-->
-<!--                <input type="range" name="call_frequency" min="10" max="120" step="5" required="" id="id_call_frequency"-->
-<!--                       oninput="id_output_call_frequency.value = id_call_frequency.value">-->
-<!--                <output name="output_call_frequency" id="id_output_call_frequency">Check every 10 minutes (10 to 120)-->
-<!--                </output>-->
-<!--            </div>-->
+            <!--            <div>-->
+            <!--                <label>Failure Threshold</label>-->
+            <!--                <input type="range" name="failure_threshold" min="1" max="10" required="" id="id_failure_threshold"-->
+            <!--                       oninput="id_output_failure_threshold.value = id_failure_threshold.value">-->
+            <!--                <output name="output_failure_threshold" id="id_output_failure_threshold">Notify after 4 failures-->
+            <!--                </output>-->
+            <!--            </div>-->
+            <!--            <div>-->
+            <!--                <label>Call Frequency</label>-->
+            <!--                <input type="range" name="call_frequency" min="10" max="120" step="5" required="" id="id_call_frequency"-->
+            <!--                       oninput="id_output_call_frequency.value = id_call_frequency.value">-->
+            <!--                <output name="output_call_frequency" id="id_output_call_frequency">Check every 10 minutes (10 to 120)-->
+            <!--                </output>-->
+            <!--            </div>-->
         </div>
         <h4>Scheduling</h4>
         <div class="d-flex">
 
-            {{ schedule_formset.management_form }}
-            {% for form in schedule_formset %}
 
-            <div class="d-flex flex-column" style="margin-right: 60px;">
-                {{ form.id }}
-                {{ form.day }}
-                {{ form.is_active }}
+            <div class="d-flex">
+                <div class="d-flex flex-column" style="margin-right: 50px">
+                    <label for="id_monday-day">Monday</label>
+                    <input name="monday-day" required="" id="id_monday-day" value="Monday" hidden>
+                    <label for="id_monday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="monday-is_active" id="id_monday-is_active" {% if schedule_monday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
 
+                        <label for="id_monday-open_time">Open time:</label>
+                        <input type="time" name="monday-open_time" required="" id="id_monday-open_time"
+                               value="{{ schedule_monday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_monday-close_time">Close time:</label>
+                        <input type="time" name="monday-close_time" required="" id="id_monday-close_time"
+                               value="{{ schedule_monday_form.close_time.value|date:'H:i'}}">
+                    </div>
+                </div>
+                <div class="d-flex flex-column" style="margin-right: 50px">
+                    <label for="id_tuesday-day">Tuesday</label>
+                    <input name="tuesday-day" required="" id="id_tuesday-day" value="Tuesday" hidden>
+                    <label for="id_tuesday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="tuesday-is_active" id="id_tuesday-is_active" {% if schedule_tuesday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
+
+                        <label for="id_tuesday-open_time">Open time:</label>
+                        <input type="time" name="tuesday-open_time" required="" id="id_tuesday-open_time"
+                               value="{{ schedule_tuesday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_tuesday-close_time">Close time:</label>
+                        <input type="time" name="tuesday-close_time" required="" id="id_tuesday-close_time"
+                               value="{{ schedule_tuesday_form.close_time.value|date:'H:i'}}">
+                    </div>
+                </div>
+                <div class="d-flex flex-column" style="margin-right: 50px">
+                    <label for="id_wednesday-day">Wednesday</label>
+                    <input name="wednesday-day" required="" id="id_wednesday-day" value="Wednesday" hidden>
+                    <label for="id_wednesday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="wednesday-is_active" id="id_wednesday-is_active" {% if schedule_wednesday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
+
+                        <label for="id_wednesday-open_time">Open time:</label>
+                        <input type="time" name="wednesday-open_time" required=""
+                               id="id_wednesday-open_time"
+                               value="{{ schedule_wednesday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_wednesday-close_time">Close time:</label>
+                        <input type="time" name="wednesday-close_time" required="" id="id_wednesday-close_time"
+                               value="{{ schedule_wednesday_form.close_time.value|date:'H:i'}}">
+                    </div>
+                </div>
+                <div class="d-flex flex-column" style="margin-right: 50px">
+                    <label for="id_thursday-day">Thursday</label>
+                    <input name="thursday-day" required="" id="id_thursday-day" value="Thursday" hidden>
+                    <label for="id_thursday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="thursday-is_active" id="id_thursday-is_active" {% if schedule_thursday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
+
+                        <label for="id_thursday-open_time">Open time:</label>
+                        <input type="time" name="thursday-open_time" required="" id="id_thursday-open_time"
+                               value="{{ schedule_thursday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_thursday-close_time">Close time:</label>
+                        <input type="time" name="thursday-close_time" required="" id="id_thursday-close_time"
+                               value="{{ schedule_thursday_form.close_time.value|date:'H:i'}}">
+                    </div>
+                </div>
+                <div class="d-flex flex-column" style="margin-right: 50px">
+                    <label for="id_friday-day">Friday</label>
+                    <input name="friday-day" required="" id="id_friday-day" value="Friday" hidden>
+                    <label for="id_friday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="friday-is_active" id="id_friday-is_active" {% if schedule_friday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
+                        <label for="id_friday-open_time">Open time:</label>
+                        <input type="time" name="friday-open_time" required="" id="id_friday-open_time"
+                               value="{{ schedule_friday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_friday-close_time">Close time:</label>
+                        <input type="time" name="friday-close_time" required="" id="id_friday-close_time"
+                               value="{{ schedule_friday_form.close_time.value|date:'H:i'}}">
+                    </div>
+
+                </div>
+                <div class="d-flex flex-column" style="margin-right: 50px">
+                    <label for="id_saturday-day">Saturday</label>
+                    <input name="saturday-day" required="" id="id_saturday-day" value="Saturday" hidden>
+                    <label for="id_saturday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="saturday-is_active" id="id_saturday-is_active" {% if schedule_saturday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
+                        <label for="id_saturday-open_time">Open time:</label>
+                        <input type="time" name="saturday-open_time" required="" id="id_saturday-open_time"
+                               value="{{ schedule_saturday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_saturday-close_time">Close time:</label>
+                        <input type="time" name="saturday-close_time" required="" id="id_saturday-close_time"
+                               value="{{ schedule_saturday_form.close_time.value|date:'H:i'}}">
+                    </div>
+
+                </div>
+                <div class="d-flex flex-column">
+                    <label for="id_sunday-day">Sunday</label>
+                    <input name="sunday-day" required="" id="id_sunday-day" value="Sunday" hidden>
+                    <label for="id_sunday-is_active" hidden>Is active:</label>
+                    <input type="checkbox" name="sunday-is_active" id="id_sunday-is_active" {% if schedule_sunday_form.is_active.value %} checked {% else %} {% endif %}>
+                    <div class="{{ form.is_active.html_name }} select">
+                        <label for="id_sunday-open_time">Open time:</label>
+                        <input type="time" name="sunday-open_time" required="" id="id_sunday-open_time"
+                               value="{{ schedule_sunday_form.open_time.value|date:'H:i'}}">
+                        <label for="id_sunday-close_time">Close time:</label>
+                        <input type="time" name="sunday-close_time" required="" id="id_sunday-close_time"
+                               value="{{ schedule_sunday_form.close_time.value|date:'H:i'}}">
+                    </div>
+
+                </div>
                 <div class="{{ form.is_active.html_name }} select">
-                    <!--                    <label for="{{ form.open_time.id_for_label }}">Open</label>-->
-                    <!--                    <input type="time" name="{{ form.open_time.html_name }}"-->
-                    <!--                           id="{{ form.open_time.id_for_label }}">-->
-                    <!--                    <label for="{{ form.close_time.id_for_label }}">Close</label>-->
-                    <!--                    <input type="time" name="{{ form.close_time.html_name }}"-->
-                    <!--                           id="{{ form.close_time.id_for_label }}"-->
-                    <!--                           style="margin-bottom: 20px">-->
-                    {{ form.open_time }}
-                    {{ form.close_time}}
+
                 </div>
             </div>
-            {% endfor %}
+
 
         </div>
         <button type="submit">SUBMIT</button>
@@ -81,11 +175,13 @@
 <script type="text/javascript">
    $(document).ready(function() {
     $('input[type="checkbox"]').click(function() {
-     var inputValue = $(this).attr("name");
+     var inputValue = $(this).attr("checked");
      $("." + inputValue).toggleClass('selected');
 
     });
    });
+
+
 
 
 
