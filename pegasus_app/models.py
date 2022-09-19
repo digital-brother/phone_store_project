@@ -1,5 +1,6 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
+from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import AbstractUser
 
@@ -25,6 +26,9 @@ class PhoneNumberCheckConfig(models.Model):
     test_frequency = models.IntegerField(validators=[MaxValueValidator(120)])
 
     user_plan = models.ForeignKey('UserPlan', on_delete=models.CASCADE, related_name='phone_configs')
+
+    def get_absolute_url(self):
+        return reverse('change_config_number', kwargs={'id': self.id})
 
     def create_schedule(self):
         for schedule_day_type in ScheduleDay.ScheduleDayType.values:

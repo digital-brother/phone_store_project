@@ -54,7 +54,8 @@ def schedule_form_handler(request, phone_config, weekday):
 def change_config_number(request, id):
     phone_config = PhoneNumberCheckConfig.objects.get(id=id)
     if request.method == 'GET':
-        phone_config_form = PhoneNumberCheckConfigForm(instance=phone_config)
+        schedule_day_formset = ScheduleDayFormset(phone_config=phone_config,)
+
         #
         # schedule_monday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.MONDAY)
         # schedule_tuesday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.TUESDAY)
@@ -82,13 +83,13 @@ def change_config_number(request, id):
 
     context = {
         'phone_config_form': phone_config_form,
-        'schedule_monday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.MONDAY),
-        'schedule_tuesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.TUESDAY),
-        'schedule_wednesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.WEDNESDAY),
-        'schedule_thursday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.THURSDAY),
-        'schedule_friday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.FRIDAY),
-        'schedule_saturday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SATURDAY),
-        'schedule_sunday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SUNDAY)
+        'schedule_day_formset': schedule_day_formset
+        # 'schedule_tuesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.TUESDAY),
+        # 'schedule_wednesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.WEDNESDAY),
+        # 'schedule_thursday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.THURSDAY),
+        # 'schedule_friday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.FRIDAY),
+        # 'schedule_saturday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SATURDAY),
+        # 'schedule_sunday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SUNDAY)
 
     }
 
@@ -98,9 +99,11 @@ def change_config_number(request, id):
 def home_page(request):
     phone_config_form = PhoneNumberCheckConfigForm()
     phone = PhoneNumberCheckConfig.objects.values('phone')
+    schedule_formset = ScheduleDayFormset()
     if request.method == 'POST':
+        # import ipdb; ipdb.set_trace()
         phone_config_form = PhoneNumberCheckConfigForm(request.POST)
-        schedule_formset = ScheduleDayForm(request.POST)
+        schedule_formset = ScheduleDayFormset(request.POST)
         if phone_config_form.is_valid():
             phone_config = phone_config_form.save(commit=False)
             phone_config.user_plan = request.user.plan
@@ -110,18 +113,13 @@ def home_page(request):
                     form.cleaned_data['phone_config'] = phone_config
                     schedule_day = ScheduleDay.objects.create(**form.cleaned_data)
 
+
     print(request.POST)
 
     context = {
         'phone': phone,
         'phone_config_form': phone_config_form,
-        'schedule_monday_form': ScheduleDayForm(),
-        'schedule_tuesday_form': ScheduleDayForm(),
-        'schedule_wednesday_form': ScheduleDayForm(),
-        'schedule_thursday_form': ScheduleDayForm(),
-        'schedule_friday_form': ScheduleDayForm(),
-        'schedule_saturday_form': ScheduleDayForm(),
-        'schedule_sunday_form': ScheduleDayForm()
+        'schedule_formset': schedule_formset
     }
 
     return render(request, 'pegasus_app/main.html', context)
@@ -144,7 +142,7 @@ class Phone(TemplateView):
 
     def post(self, request, id):
         phone_number = PhoneNumberCheckConfig.objects.get(id=id)
-
+        # import ipdb; ipdb.set_trace()
         phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number, data=request.POST)
         if phone_number_form.is_valid():
             phone_number_form.save()
