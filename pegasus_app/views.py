@@ -5,11 +5,11 @@ from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
 
 from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm, ScheduleDayFormset
-from pegasus_app.models import ScheduleDay, PhoneNumberCheckConfig
+from pegasus_app.models import Schedule, Phone
 
 
 class PhoneNumberCheckConfigCreateView(CreateView):
-    model = PhoneNumberCheckConfig
+    model = Phone
     template_name = 'phone_create.html'
     form_class = PhoneNumberCheckConfigForm
     object = None
@@ -40,11 +40,11 @@ class PhoneNumberCheckConfigCreateView(CreateView):
         phone_form = self.get_form(form_class)
         schedule_day_formset = ScheduleDayFormset(self.request.POST)
         if phone_form.is_valid() and schedule_day_formset.is_valid():
-            return self.form_valid(phone_form, schedule_day_formset)
+            return self.forms_valid(phone_form, schedule_day_formset)
         else:
-            return self.form_invalid(phone_form, schedule_day_formset)
+            return self.forms_invalid(phone_form, schedule_day_formset)
 
-    def form_valid(self, phone_form, schedule_day_formset):
+    def forms_valid(self, phone_form, schedule_day_formset):
         """
         Called if all forms are valid. Creates Assignment instance along with the
         associated AssignmentQuestion instances then redirects to success url
@@ -68,24 +68,24 @@ class PhoneNumberCheckConfigCreateView(CreateView):
 
         return HttpResponseRedirect(self.get_success_url())
 
-    def form_invalid(self, phone_form, schedule_day_formset):
+    def forms_invalid(self, phone_form, schedule_day_formset):
         """
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
 
         Args:
             phone_form: Phone Form
-            schedule_day_formset: Schedule Day Form
+            schedule_day_formset: Schedule Schedule Form
         """
         return self.render_to_response(
-            self.get_context_data(form=phone_form,
-                                  assignment_question_form=schedule_day_formset
+            self.get_context_data(phone_form=phone_form,
+                                  schedule_day_formset=schedule_day_formset
                                   )
         )
 
 
 def get_schedule_day_form(phone_config, weekday):
-    schedule_day = ScheduleDay.objects.filter(phone_config=phone_config, day=weekday).first()
+    schedule_day = Schedule.objects.filter(phone_config=phone_config, day=weekday).first()
 
     return ScheduleDayForm(instance=schedule_day, prefix=weekday)
 
@@ -93,7 +93,7 @@ def get_schedule_day_form(phone_config, weekday):
 def validate_and_save_schedule_day_form(payload, phone_config, weekday):
     schedule_day_form = ScheduleDayForm(payload, prefix=weekday)
     if schedule_day_form.is_valid():
-        ScheduleDay.objects.update_or_create(
+        Schedule.objects.update_or_create(
             phone_config=phone_config,
             day=weekday,
             defaults=schedule_day_form.cleaned_data
@@ -103,21 +103,21 @@ def validate_and_save_schedule_day_form(payload, phone_config, weekday):
 
 def schedule_form_handler(request, phone_config, weekday):
     if request.method == 'GET':
-        schedule_day = ScheduleDay.objects.filter(phone_config=phone_config, day=weekday).first()
+        schedule_day = Schedule.objects.filter(phone_config=phone_config, day=weekday).first()
         schedule_day_form = ScheduleDayForm(instance=schedule_day, prefix=weekday)
     elif request.method == 'POST':
         # import ipdb; ipdb.set_trace()
         schedule_day_form = ScheduleDayForm(request.POST, prefix=weekday)
         if schedule_day_form.is_valid():
             if schedule_day_form.cleaned_data['is_active']:
-                ScheduleDay.objects.update_or_create(
+                Schedule.objects.update_or_create(
                     phone_config=phone_config,
                     day=weekday,
                     defaults=schedule_day_form.cleaned_data
                 )
             # else:
-            #     ScheduleDay.objects.update_or_create(
-            #         phone_config=phone_config,
+            #     Schedule.objects.update_or_create(
+            #         phone=phone,
             #         day=weekday,
             #         defaults={
             #             'open_time': None,
@@ -128,14 +128,14 @@ def schedule_form_handler(request, phone_config, weekday):
 
 
 def change_config_number(request, id):
-    phone_config = PhoneNumberCheckConfig.objects.get(id=id)
+    phone_config = Phone.objects.get(id=id)
     if request.method == 'GET':
         schedule_day_formset = ScheduleDayFormset(phone_config=phone_config, )
 
         #
-        # schedule_monday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.MONDAY)
-        # schedule_tuesday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.TUESDAY)
-        # schedule_wednesday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.WEDNESDAY)
+        # schedule_monday_form = get_schedule_day_form(phone, Schedule.Day.MONDAY)
+        # schedule_tuesday_form = get_schedule_day_form(phone, Schedule.Day.TUESDAY)
+        # schedule_wednesday_form = get_schedule_day_form(phone, Schedule.Day.WEDNESDAY)
         # schedule_thursday_form = ScheduleDayForm(instance=schedule_thursday, prefix='thursday')
         # schedule_friday_form = ScheduleDayForm(instance=schedule_friday, prefix='friday')
         # schedule_saturday_form = ScheduleDayForm(instance=schedule_saturday, prefix='saturday')
@@ -145,27 +145,27 @@ def change_config_number(request, id):
 
         phone_config_form = PhoneNumberCheckConfigForm(request.POST)
         if phone_config_form.is_valid():
-            PhoneNumberCheckConfig.objects.update_or_create(id=id, defaults={
+            Phone.objects.update_or_create(id=id, defaults={
                 'ima_name': phone_config_form.cleaned_data['ima_name'],
-                'phone': phone_config_form.cleaned_data['phone'],
+                'number': phone_config_form.cleaned_data['number'],
                 'failure_threshold': phone_config_form.cleaned_data['failure_threshold'],
                 'test_frequency': phone_config_form.cleaned_data['test_frequency']
             })
 
         # schedule_monday_form = validate_and_save_schedule_day_form(
-        #     request.POST, phone_config, ScheduleDay.ScheduleDayType.MONDAY
+        #     request.POST, phone, Schedule.Day.MONDAY
         # )
         # ...
 
     context = {
         'phone_config_form': phone_config_form,
         'schedule_day_formset': schedule_day_formset
-        # 'schedule_tuesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.TUESDAY),
-        # 'schedule_wednesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.WEDNESDAY),
-        # 'schedule_thursday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.THURSDAY),
-        # 'schedule_friday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.FRIDAY),
-        # 'schedule_saturday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SATURDAY),
-        # 'schedule_sunday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SUNDAY)
+        # 'schedule_tuesday_form': schedule_form_handler(request, phone, Schedule.Day.TUESDAY),
+        # 'schedule_wednesday_form': schedule_form_handler(request, phone, Schedule.Day.WEDNESDAY),
+        # 'schedule_thursday_form': schedule_form_handler(request, phone, Schedule.Day.THURSDAY),
+        # 'schedule_friday_form': schedule_form_handler(request, phone, Schedule.Day.FRIDAY),
+        # 'schedule_saturday_form': schedule_form_handler(request, phone, Schedule.Day.SATURDAY),
+        # 'schedule_sunday_form': schedule_form_handler(request, phone, Schedule.Day.SUNDAY)
 
     }
 
@@ -174,7 +174,7 @@ def change_config_number(request, id):
 
 def home_page(request):
     phone_config_form = PhoneNumberCheckConfigForm()
-    phone = PhoneNumberCheckConfig.objects.values('phone')
+    phone = Phone.objects.values('number')
     schedule_formset = ScheduleDayFormset()
     if request.method == 'POST':
         # import ipdb; ipdb.set_trace()
@@ -186,13 +186,13 @@ def home_page(request):
             phone_config.save()
             for form in schedule_formset:
                 if form.is_valid():
-                    form.cleaned_data['phone_config'] = phone_config
-                    schedule_day = ScheduleDay.objects.create(**form.cleaned_data)
+                    form.cleaned_data['phone'] = phone_config
+                    schedule_day = Schedule.objects.create(**form.cleaned_data)
 
     print(request.POST)
 
     context = {
-        'phone': phone,
+        'number': phone,
         'phone_config_form': phone_config_form,
         'schedule_formset': schedule_formset
     }
@@ -206,7 +206,7 @@ class Phone(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        phone_number = PhoneNumberCheckConfig.objects.first()
+        phone_number = Phone.objects.first()
         phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number)
         context['phone_number_form'] = phone_number_form
 
@@ -216,7 +216,7 @@ class Phone(TemplateView):
         return context
 
     def post(self, request, id):
-        phone_number = PhoneNumberCheckConfig.objects.get(id=id)
+        phone_number = Phone.objects.get(id=id)
         # import ipdb; ipdb.set_trace()
         phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number, data=request.POST)
         if phone_number_form.is_valid():

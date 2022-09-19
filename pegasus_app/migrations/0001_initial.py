@@ -46,11 +46,11 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='PhoneNumberCheckConfig',
+            name='Phone',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('ima_name', models.CharField(max_length=64)),
-                ('phone', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None)),
+                ('number', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None)),
                 ('failure_threshold', models.IntegerField(validators=[django.core.validators.MaxValueValidator(10)])),
                 ('test_frequency', models.IntegerField(validators=[django.core.validators.MaxValueValidator(120)])),
             ],
@@ -65,14 +65,14 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='ScheduleDay',
+            name='Schedule',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('is_active', models.BooleanField()),
-                ('day', models.CharField(choices=[('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'), ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')], max_length=32)),
+                ('name', models.CharField(choices=[('Monday', 'Monday'), ('Tuesday', 'Tuesday'), ('Wednesday', 'Wednesday'), ('Thursday', 'Thursday'), ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')], max_length=32)),
                 ('open_time', models.TimeField()),
                 ('close_time', models.TimeField()),
-                ('phone_config', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schedules', to='pegasus_app.phonenumbercheckconfig')),
+                ('phone', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='schedules', to='pegasus_app.phonenumbercheckconfig')),
             ],
         ),
         migrations.AddField(

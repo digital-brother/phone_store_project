@@ -19,9 +19,9 @@ class UserPlan(models.Model):
         return self.name
 
 
-class PhoneNumberCheckConfig(models.Model):
+class Phone(models.Model):
     ima_name = models.CharField(max_length=64)
-    phone = PhoneNumberField()
+    number = PhoneNumberField()
     failure_threshold = models.IntegerField(validators=[MaxValueValidator(10)])
     test_frequency = models.IntegerField(validators=[MaxValueValidator(120)])
 
@@ -31,17 +31,17 @@ class PhoneNumberCheckConfig(models.Model):
         return reverse('change_config_number', kwargs={'id': self.id})
 
     def create_schedule(self):
-        for schedule_day_type in ScheduleDay.ScheduleDayType.values:
-            schedule_day_obj = ScheduleDay.objects.filter(phone_config=self, day=schedule_day_type).first()
+        for schedule_day_type in Schedule.Day.values:
+            schedule_day_obj = Schedule.objects.filter(phone_config=self, day=schedule_day_type).first()
             if not schedule_day_obj:
-                ScheduleDay.objects.create(phone_config=self, day=schedule_day_type)
+                Schedule.objects.create(phone_config=self, day=schedule_day_type)
 
     def __str__(self):
         return self.ima_name
 
 
-class ScheduleDay(models.Model):
-    class ScheduleDayType(models.TextChoices):
+class Schedule(models.Model):
+    class Day(models.TextChoices):
         MONDAY = 'monday'
         TUESDAY = 'tuesday'
         WEDNESDAY = 'wednesday'
@@ -51,8 +51,8 @@ class ScheduleDay(models.Model):
         SUNDAY = 'sunday'
 
     is_active = models.BooleanField(null=True)
-    day = models.CharField(max_length=32, choices=ScheduleDayType.choices)
+    day = models.CharField(max_length=32, choices=Day.choices)
     open_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
     close_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
-    phone_config = models.ForeignKey('PhoneNumberCheckConfig', on_delete=models.CASCADE, related_name='schedules')
+    phone = models.ForeignKey('pegasus_app.models.Phone', on_delete=models.CASCADE, related_name='schedules')
