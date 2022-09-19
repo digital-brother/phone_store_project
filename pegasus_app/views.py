@@ -2,16 +2,16 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import UpdateView, TemplateView
+from django.views.generic import UpdateView, TemplateView, CreateView
 
 from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm, ScheduleDayFormset
 from pegasus_app.models import ScheduleDay, PhoneNumberCheckConfig
 
 
-class AssignmentCreateView(generic_view.CreateView):
-    model = Assignment
-    template_name = 'path_to_template_to_assignment_create_form.html'
-    form_class = AssignmentForm
+class PhoneNumberCheckConfigCreateView(CreateView):
+    model = PhoneNumberCheckConfig
+    template_name = 'phone_create.html'
+    form_class = PhoneNumberCheckConfigForm
     object = None
 
     def get(self, request, *args, **kwargs):
@@ -22,10 +22,10 @@ class AssignmentCreateView(generic_view.CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        assignment_question_form = AssignmentQuestionFormSet()
+        weekday_formset = ScheduleDayFormset()
         return self.render_to_response(
-                  self.get_context_data(form=form,
-                                        assignment_question_form=assignment_question_form,
+                  self.get_context_data(phone_form=form,
+                                        weekday_formset=weekday_formset,
                                         )
                                      )
 
