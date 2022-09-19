@@ -1,8 +1,8 @@
-from django import forms
+from django.http import HttpResponseRedirect
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import UpdateView, TemplateView, CreateView
+from django.views.generic import TemplateView, CreateView
 
 from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm, ScheduleDayFormset
 from pegasus_app.models import ScheduleDay, PhoneNumberCheckConfig
@@ -24,10 +24,10 @@ class PhoneNumberCheckConfigCreateView(CreateView):
         form = self.get_form(form_class)
         weekday_formset = ScheduleDayFormset()
         return self.render_to_response(
-                  self.get_context_data(phone_form=form,
-                                        weekday_formset=weekday_formset,
-                                        )
-                                     )
+            self.get_context_data(phone_form=form,
+                                  weekday_formset=weekday_formset,
+                                  )
+        )
 
     def post(self, request, *args, **kwargs):
         """
@@ -78,14 +78,14 @@ class PhoneNumberCheckConfigCreateView(CreateView):
             schedule_day_formset: Schedule Day Form
         """
         return self.render_to_response(
-                 self.get_context_data(form=phone_form,
-                                       assignment_question_form=schedule_day_formset
-                                       )
+            self.get_context_data(form=phone_form,
+                                  assignment_question_form=schedule_day_formset
+                                  )
         )
 
 
 def get_schedule_day_form(phone_config, weekday):
-    schedule_day = ScheduleDay.objects.filter(phone_config=phone_config,day=weekday).first()
+    schedule_day = ScheduleDay.objects.filter(phone_config=phone_config, day=weekday).first()
 
     return ScheduleDayForm(instance=schedule_day, prefix=weekday)
 
@@ -130,7 +130,7 @@ def schedule_form_handler(request, phone_config, weekday):
 def change_config_number(request, id):
     phone_config = PhoneNumberCheckConfig.objects.get(id=id)
     if request.method == 'GET':
-        schedule_day_formset = ScheduleDayFormset(phone_config=phone_config,)
+        schedule_day_formset = ScheduleDayFormset(phone_config=phone_config, )
 
         #
         # schedule_monday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.MONDAY)
@@ -189,7 +189,6 @@ def home_page(request):
                     form.cleaned_data['phone_config'] = phone_config
                     schedule_day = ScheduleDay.objects.create(**form.cleaned_data)
 
-
     print(request.POST)
 
     context = {
@@ -229,6 +228,7 @@ class Phone(TemplateView):
 
         redirect_url = reverse('phone', args='1')
         return HttpResponseRedirect(redirect_url)
+
 
 def manage_books(request, author_id):
     author = Author.objects.get(pk=author_id)
