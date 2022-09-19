@@ -1,9 +1,9 @@
 from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, TemplateView
 
-from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm
+from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm, ScheduleDayFormset
 from pegasus_app.models import ScheduleDay, PhoneNumberCheckConfig
 
 
@@ -124,3 +124,19 @@ def home_page(request):
     }
 
     return render(request, 'pegasus_app/main.html', context)
+
+
+class TempView(TemplateView):
+    template_name = "temp.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        phone_number = PhoneNumberCheckConfig.objects.first()
+        phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number)
+        context['phone_number_form'] = phone_number_form
+
+        schedule_formset = ScheduleDayFormset(instance=phone_number)
+        context['schedule_formset'] = schedule_formset
+
+        return context

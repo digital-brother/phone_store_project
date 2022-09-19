@@ -1,0 +1,14 @@
+<h1>Temp</h1>
+
+<form method="post">
+
+  {{ phone_number_form }}
+
+  {{ schedule_formset.management_form }}
+  <table>
+      {% for schedule_form in schedule_formset %}
+      {{ schedule_form }}
+      {% endfor %}
+  </table>
+
+</form>
