@@ -23,9 +23,14 @@ class PhoneView(TemplateView):
         form_kwargs = {'instance': obj}
         if self.request.method in ('POST', 'PUT'):
             form_kwargs.update({'data': self.request.POST})
-
         form = self.form_class(**form_kwargs)
-        formset = self.formset_class(**form_kwargs)
+
+        formset_kwargs = form_kwargs.copy()
+        if self.request.method == 'GET':
+            initial = [{'day': day_value} for day_value in Schedule.Day.values]
+            formset_kwargs.update({'initial': initial})
+        formset = self.formset_class(**formset_kwargs)
+
         return form, formset
 
     def get(self, request, *args, **kwargs):

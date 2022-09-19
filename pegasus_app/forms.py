@@ -19,5 +19,4 @@ class ScheduleDayForm(forms.ModelForm):
         fields = ['day', 'is_active', 'open_time', 'close_time']
 
 
-ScheduleDayFormset = inlineformset_factory(Phone, Schedule, fields='__all__', extra=0, can_delete=False)
-
+ScheduleDayFormset = inlineformset_factory(Phone, Schedule, fields='__all__', extra=7, max_num=7, can_delete=False)
