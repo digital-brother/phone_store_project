@@ -1,6 +1,7 @@
 <form action="." method="post">
   {% csrf_token %}
   {{ phone_form.as_p }}
+  <hr>
   {{ schedule_formset.as_p }}
   <input type="submit" value="Submit">
 </form>
