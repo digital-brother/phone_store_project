@@ -48,7 +48,7 @@ class ScheduleDay(models.Model):
 
     is_active = models.BooleanField(null=True)
     day = models.CharField(max_length=32, choices=ScheduleDayType.choices)
-    open_time = models.TimeField(auto_now=False, auto_now_add=False, null=True)
-    close_time = models.TimeField(auto_now=False, auto_now_add=False, null=True)
+    open_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
+    close_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
     phone_config = models.ForeignKey('PhoneNumberCheckConfig', on_delete=models.CASCADE, related_name='schedules')

@@ -1,6 +1,7 @@
 from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import UpdateView, TemplateView
 
 from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm, ScheduleDayFormset
@@ -126,7 +127,7 @@ def home_page(request):
     return render(request, 'pegasus_app/main.html', context)
 
 
-class TempView(TemplateView):
+class Phone(TemplateView):
     template_name = "temp.html"
 
     def get_context_data(self, **kwargs):
@@ -140,3 +141,30 @@ class TempView(TemplateView):
         context['schedule_formset'] = schedule_formset
 
         return context
+
+    def post(self, request, id):
+        phone_number = PhoneNumberCheckConfig.objects.get(id=id)
+
+        phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number, data=request.POST)
+        if phone_number_form.is_valid():
+            phone_number_form.save()
+
+        formset = ScheduleDayFormset(request.POST, instance=phone_number)
+        if formset.is_valid():
+            formset.save()
+
+        redirect_url = reverse('phone', args='1')
+        return HttpResponseRedirect(redirect_url)
+
+def manage_books(request, author_id):
+    author = Author.objects.get(pk=author_id)
+    BookInlineFormSet = inlineformset_factory(Author, Book, fields=('title',))
+    if request.method == "POST":
+        formset = BookInlineFormSet(request.POST, request.FILES, instance=author)
+        if formset.is_valid():
+            formset.save()
+            # Do something. Should generally end with a redirect. For example:
+            return HttpResponseRedirect(author.get_absolute_url())
+    else:
+        formset = BookInlineFormSet(instance=author)
+    return render(request, 'manage_books.html', {'formset': formset})

@@ -2,6 +2,8 @@
 
 <form method="post">
 
+  {% csrf_token %}
+
   {{ phone_number_form }}
 
   {{ schedule_formset.management_form }}
@@ -10,5 +12,7 @@
       {{ schedule_form }}
       {% endfor %}
   </table>
+
+  <input type="submit" value="OK">
 
 </form>
