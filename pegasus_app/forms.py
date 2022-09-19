@@ -4,7 +4,7 @@ from django.forms import inlineformset_factory
 from pegasus_app.models import Phone, Schedule
 
 
-class PhoneNumberCheckConfigForm(forms.ModelForm):
+class PhoneForm(forms.ModelForm):
     class Meta:
         model = Phone
         fields = ['ima_name', 'number', 'failure_threshold', 'test_frequency']

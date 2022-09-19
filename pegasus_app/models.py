@@ -25,8 +25,6 @@ class Phone(models.Model):
     failure_threshold = models.IntegerField(validators=[MaxValueValidator(10)])
     test_frequency = models.IntegerField(validators=[MaxValueValidator(120)])
 
-    user_plan = models.ForeignKey('UserPlan', on_delete=models.CASCADE, related_name='phone_configs')
-
     def get_absolute_url(self):
         return reverse('change_config_number', kwargs={'id': self.id})
 
@@ -55,4 +53,4 @@ class Schedule(models.Model):
     open_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
     close_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
-    phone = models.ForeignKey('pegasus_app.models.Phone', on_delete=models.CASCADE, related_name='schedules')
+    phone = models.ForeignKey(Phone, on_delete=models.CASCADE, related_name='schedules')

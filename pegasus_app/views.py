@@ -4,28 +4,28 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
 
-from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm, ScheduleDayFormset
+from pegasus_app.forms import PhoneForm, ScheduleDayForm, ScheduleDayFormset
 from pegasus_app.models import Schedule, Phone
 
 
-class PhoneNumberCheckConfigCreateView(CreateView):
+class PhoneCreateView(CreateView):
     model = Phone
     template_name = 'phone_create.html'
-    form_class = PhoneNumberCheckConfigForm
+    form_class = PhoneForm
     object = None
 
     def get(self, request, *args, **kwargs):
         """
-        Handles GET requests and instantiates blank versions of the form
+        Handles GET requests and instantiates blank versions of the phone_form
         and its inline formsets.
         """
         self.object = None
         form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        weekday_formset = ScheduleDayFormset()
+        phone_form = self.get_form(form_class)
+        schedule_formset = ScheduleDayFormset()
         return self.render_to_response(
-            self.get_context_data(phone_form=form,
-                                  weekday_formset=weekday_formset,
+            self.get_context_data(phone_form=phone_form,
+                                  schedule_formset=schedule_formset,
                                   )
         )
 
@@ -38,22 +38,16 @@ class PhoneNumberCheckConfigCreateView(CreateView):
         self.object = None
         form_class = self.get_form_class()
         phone_form = self.get_form(form_class)
-        schedule_day_formset = ScheduleDayFormset(self.request.POST)
-        if phone_form.is_valid() and schedule_day_formset.is_valid():
-            return self.forms_valid(phone_form, schedule_day_formset)
+        schedule_formset = ScheduleDayFormset(self.request.POST)
+        if phone_form.is_valid() and schedule_formset.is_valid():
+            return self.forms_valid(phone_form, schedule_formset)
         else:
-            return self.forms_invalid(phone_form, schedule_day_formset)
+            return self.forms_invalid(phone_form, schedule_formset)
 
     def forms_valid(self, phone_form, schedule_day_formset):
         """
         Called if all forms are valid. Creates Assignment instance along with the
         associated AssignmentQuestion instances then redirects to success url
-        Args:
-            phone_form: Assignment Form
-            schedule_day_formset: Assignment Question Form
-
-        Returns: an HttpResponse to success url
-
         """
         self.object = phone_form.save(commit=False)
         # pre-processing for Assignment instance here...
@@ -72,10 +66,6 @@ class PhoneNumberCheckConfigCreateView(CreateView):
         """
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
-
-        Args:
-            phone_form: Phone Form
-            schedule_day_formset: Schedule Schedule Form
         """
         return self.render_to_response(
             self.get_context_data(phone_form=phone_form,
@@ -143,7 +133,7 @@ def change_config_number(request, id):
 
     elif request.method == 'POST':
 
-        phone_config_form = PhoneNumberCheckConfigForm(request.POST)
+        phone_config_form = PhoneForm(request.POST)
         if phone_config_form.is_valid():
             Phone.objects.update_or_create(id=id, defaults={
                 'ima_name': phone_config_form.cleaned_data['ima_name'],
@@ -173,12 +163,12 @@ def change_config_number(request, id):
 
 
 def home_page(request):
-    phone_config_form = PhoneNumberCheckConfigForm()
+    phone_config_form = PhoneForm()
     phone = Phone.objects.values('number')
     schedule_formset = ScheduleDayFormset()
     if request.method == 'POST':
         # import ipdb; ipdb.set_trace()
-        phone_config_form = PhoneNumberCheckConfigForm(request.POST)
+        phone_config_form = PhoneForm(request.POST)
         schedule_formset = ScheduleDayFormset(request.POST)
         if phone_config_form.is_valid():
             phone_config = phone_config_form.save(commit=False)
@@ -207,7 +197,7 @@ class Phone(TemplateView):
         context = super().get_context_data(**kwargs)
 
         phone_number = Phone.objects.first()
-        phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number)
+        phone_number_form = PhoneForm(instance=phone_number)
         context['phone_number_form'] = phone_number_form
 
         schedule_formset = ScheduleDayFormset(instance=phone_number)
@@ -218,7 +208,7 @@ class Phone(TemplateView):
     def post(self, request, id):
         phone_number = Phone.objects.get(id=id)
         # import ipdb; ipdb.set_trace()
-        phone_number_form = PhoneNumberCheckConfigForm(instance=phone_number, data=request.POST)
+        phone_number_form = PhoneForm(instance=phone_number, data=request.POST)
         if phone_number_form.is_valid():
             phone_number_form.save()
 

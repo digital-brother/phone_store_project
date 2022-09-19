@@ -1,6 +1,6 @@
 <form action="." method="post">
   {% csrf_token %}
   {{ phone_form.as_p }}
-  {{ weekday_formset.as_p }}
+  {{ schedule_formset.as_p }}
   <input type="submit" value="Submit">
 </form>
