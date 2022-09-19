@@ -12,19 +12,25 @@
         flex-direction: column;
         }
 
-
-
-
-
-
-
-
-
-
-
-
 </style>
+
 <div style="box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; width: 83%;     padding: 0 30px;">
+    <div class="d-flex ">
+            <h1>Verify Phone</h1>
+            <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Dropdown button
+  </button>
+  <ul class="dropdown-menu">
+      {% for p in phone %}
+    <li><a class="dropdown-item" href="#">{{ p.phone }}</a></li>
+<!--    <li><a class="dropdown-item" href="#">Another action</a></li>-->
+<!--    <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+      {% endfor %}
+  </ul>
+</div>
+    </div>
+
     <form method="POST">
         {% csrf_token %}
         {{ phone_config_form.as_p }}
@@ -59,13 +65,12 @@
                     <label for="id_monday-day">Monday</label>
                     <input name="monday-day" required="" id="id_monday-day" value="Monday" hidden>
                     <label for="id_monday-is_active" hidden>Is active:</label>
-                    <input type="checkbox" name="monday-is_active" id="id_monday-is_active" {% if schedule_monday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
-
-                        <label for="id_monday-open_time">Open time:</label>
+                    <input type="checkbox" name="monday-is_active" id="id_monday-is_active" {% if schedule_monday_form.is_active.value %} checked {% else %} {% endif %}">
+                    <div class="monday-is_active select">
+                        <label for="id_monday-open_time">Open</label>
                         <input type="time" name="monday-open_time" required="" id="id_monday-open_time"
                                value="{{ schedule_monday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_monday-close_time">Close time:</label>
+                        <label for="id_monday-close_time">Close</label>
                         <input type="time" name="monday-close_time" required="" id="id_monday-close_time"
                                value="{{ schedule_monday_form.close_time.value|date:'H:i'}}">
                     </div>
@@ -75,12 +80,12 @@
                     <input name="tuesday-day" required="" id="id_tuesday-day" value="Tuesday" hidden>
                     <label for="id_tuesday-is_active" hidden>Is active:</label>
                     <input type="checkbox" name="tuesday-is_active" id="id_tuesday-is_active" {% if schedule_tuesday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
+                    <div class="tuesday-is_active select">
 
-                        <label for="id_tuesday-open_time">Open time:</label>
+                        <label for="id_tuesday-open_time">Open</label>
                         <input type="time" name="tuesday-open_time" required="" id="id_tuesday-open_time"
                                value="{{ schedule_tuesday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_tuesday-close_time">Close time:</label>
+                        <label for="id_tuesday-close_time">Close</label>
                         <input type="time" name="tuesday-close_time" required="" id="id_tuesday-close_time"
                                value="{{ schedule_tuesday_form.close_time.value|date:'H:i'}}">
                     </div>
@@ -90,13 +95,13 @@
                     <input name="wednesday-day" required="" id="id_wednesday-day" value="Wednesday" hidden>
                     <label for="id_wednesday-is_active" hidden>Is active:</label>
                     <input type="checkbox" name="wednesday-is_active" id="id_wednesday-is_active" {% if schedule_wednesday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
+                    <div class="wednesday-is_active select">
 
-                        <label for="id_wednesday-open_time">Open time:</label>
+                        <label for="id_wednesday-open_time">Open</label>
                         <input type="time" name="wednesday-open_time" required=""
                                id="id_wednesday-open_time"
                                value="{{ schedule_wednesday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_wednesday-close_time">Close time:</label>
+                        <label for="id_wednesday-close_time">Close</label>
                         <input type="time" name="wednesday-close_time" required="" id="id_wednesday-close_time"
                                value="{{ schedule_wednesday_form.close_time.value|date:'H:i'}}">
                     </div>
@@ -106,12 +111,12 @@
                     <input name="thursday-day" required="" id="id_thursday-day" value="Thursday" hidden>
                     <label for="id_thursday-is_active" hidden>Is active:</label>
                     <input type="checkbox" name="thursday-is_active" id="id_thursday-is_active" {% if schedule_thursday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
+                    <div class="thursday-is_active select">
 
-                        <label for="id_thursday-open_time">Open time:</label>
+                        <label for="id_thursday-open_time">Open</label>
                         <input type="time" name="thursday-open_time" required="" id="id_thursday-open_time"
                                value="{{ schedule_thursday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_thursday-close_time">Close time:</label>
+                        <label for="id_thursday-close_time">Close</label>
                         <input type="time" name="thursday-close_time" required="" id="id_thursday-close_time"
                                value="{{ schedule_thursday_form.close_time.value|date:'H:i'}}">
                     </div>
@@ -121,11 +126,11 @@
                     <input name="friday-day" required="" id="id_friday-day" value="Friday" hidden>
                     <label for="id_friday-is_active" hidden>Is active:</label>
                     <input type="checkbox" name="friday-is_active" id="id_friday-is_active" {% if schedule_friday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
-                        <label for="id_friday-open_time">Open time:</label>
+                    <div class="friday-is_active select">
+                        <label for="id_friday-open_time">Open</label>
                         <input type="time" name="friday-open_time" required="" id="id_friday-open_time"
                                value="{{ schedule_friday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_friday-close_time">Close time:</label>
+                        <label for="id_friday-close_time">Close</label>
                         <input type="time" name="friday-close_time" required="" id="id_friday-close_time"
                                value="{{ schedule_friday_form.close_time.value|date:'H:i'}}">
                     </div>
@@ -136,11 +141,11 @@
                     <input name="saturday-day" required="" id="id_saturday-day" value="Saturday" hidden>
                     <label for="id_saturday-is_active" hidden>Is active:</label>
                     <input type="checkbox" name="saturday-is_active" id="id_saturday-is_active" {% if schedule_saturday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
-                        <label for="id_saturday-open_time">Open time:</label>
+                    <div class="saturday-is_active select">
+                        <label for="id_saturday-open_time">Open</label>
                         <input type="time" name="saturday-open_time" required="" id="id_saturday-open_time"
                                value="{{ schedule_saturday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_saturday-close_time">Close time:</label>
+                        <label for="id_saturday-close_time">Close</label>
                         <input type="time" name="saturday-close_time" required="" id="id_saturday-close_time"
                                value="{{ schedule_saturday_form.close_time.value|date:'H:i'}}">
                     </div>
@@ -151,42 +156,34 @@
                     <input name="sunday-day" required="" id="id_sunday-day" value="Sunday" hidden>
                     <label for="id_sunday-is_active" hidden>Is active:</label>
                     <input type="checkbox" name="sunday-is_active" id="id_sunday-is_active" {% if schedule_sunday_form.is_active.value %} checked {% else %} {% endif %}>
-                    <div class="{{ form.is_active.html_name }} select">
-                        <label for="id_sunday-open_time">Open time:</label>
+                    <div class="sunday-is_active select">
+                        <label for="id_sunday-open_time">Open</label>
                         <input type="time" name="sunday-open_time" required="" id="id_sunday-open_time"
                                value="{{ schedule_sunday_form.open_time.value|date:'H:i'}}">
-                        <label for="id_sunday-close_time">Close time:</label>
+                        <label for="id_sunday-close_time">Close</label>
                         <input type="time" name="sunday-close_time" required="" id="id_sunday-close_time"
                                value="{{ schedule_sunday_form.close_time.value|date:'H:i'}}">
                     </div>
 
                 </div>
-                <div class="{{ form.is_active.html_name }} select">
 
-                </div>
             </div>
 
 
         </div>
         <button type="submit">SUBMIT</button>
-</div>
 
-</form>
+    </form>
+</div>
 <script type="text/javascript">
-   $(document).ready(function() {
+$(document).ready(function() {
     $('input[type="checkbox"]').click(function() {
-     var inputValue = $(this).attr("checked");
+     var inputValue = $(this).attr("name");
      $("." + inputValue).toggleClass('selected');
 
     });
+
    });
-
-
-
-
-
-
-
 
 </script>
 </div>

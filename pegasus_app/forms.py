@@ -10,7 +10,6 @@ class PhoneNumberCheckConfigForm(forms.ModelForm):
 
 
 class ScheduleDayForm(forms.ModelForm):
-    open_time = forms.TimeField()
     class Meta:
         model = ScheduleDay
         fields = ['day', 'is_active', 'open_time', 'close_time']

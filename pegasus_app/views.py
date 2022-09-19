@@ -7,42 +7,64 @@ from pegasus_app.forms import PhoneNumberCheckConfigForm, ScheduleDayForm
 from pegasus_app.models import ScheduleDay, PhoneNumberCheckConfig
 
 
+def get_schedule_day_form(phone_config, weekday):
+    schedule_day = ScheduleDay.objects.filter(phone_config=phone_config,day=weekday).first()
+
+    return ScheduleDayForm(instance=schedule_day, prefix=weekday)
+
+
+def validate_and_save_schedule_day_form(payload, phone_config, weekday):
+    schedule_day_form = ScheduleDayForm(payload, prefix=weekday)
+    if schedule_day_form.is_valid():
+        ScheduleDay.objects.update_or_create(
+            phone_config=phone_config,
+            day=weekday,
+            defaults=schedule_day_form.cleaned_data
+        )
+    return schedule_day_form
+
+
+def schedule_form_handler(request, phone_config, weekday):
+    if request.method == 'GET':
+        schedule_day = ScheduleDay.objects.filter(phone_config=phone_config, day=weekday).first()
+        schedule_day_form = ScheduleDayForm(instance=schedule_day, prefix=weekday)
+    elif request.method == 'POST':
+        # import ipdb; ipdb.set_trace()
+        schedule_day_form = ScheduleDayForm(request.POST, prefix=weekday)
+        if schedule_day_form.is_valid():
+            if schedule_day_form.cleaned_data['is_active']:
+                ScheduleDay.objects.update_or_create(
+                    phone_config=phone_config,
+                    day=weekday,
+                    defaults=schedule_day_form.cleaned_data
+                )
+            # else:
+            #     ScheduleDay.objects.update_or_create(
+            #         phone_config=phone_config,
+            #         day=weekday,
+            #         defaults={
+            #             'open_time': None,
+            #             'close_time': None,
+            #         }
+            #     )
+    return schedule_day_form
+
+
 def change_config_number(request, id):
     phone_config = PhoneNumberCheckConfig.objects.get(id=id)
     if request.method == 'GET':
-        schedule_monday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                     day=ScheduleDay.ScheduleDayType.MONDAY).first()
-        schedule_tuesday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                      day=ScheduleDay.ScheduleDayType.TUESDAY).first()
-        schedule_wednesday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                        day=ScheduleDay.ScheduleDayType.WEDNESDAY).first()
-        schedule_thursday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                       day=ScheduleDay.ScheduleDayType.THURSDAY).first()
-        schedule_friday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                     day=ScheduleDay.ScheduleDayType.FRIDAY).first()
-        schedule_saturday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                       day=ScheduleDay.ScheduleDayType.SATURDAY).first()
-        schedule_sunday = ScheduleDay.objects.filter(phone_config=phone_config,
-                                                     day=ScheduleDay.ScheduleDayType.SUNDAY).first()
-
         phone_config_form = PhoneNumberCheckConfigForm(instance=phone_config)
-        schedule_monday_form = ScheduleDayForm(instance=schedule_monday, prefix='monday')
-        schedule_tuesday_form = ScheduleDayForm(instance=schedule_tuesday, prefix='tuesday')
-        schedule_wednesday_form = ScheduleDayForm(instance=schedule_wednesday, prefix='wednesday')
-        schedule_thursday_form = ScheduleDayForm(instance=schedule_thursday, prefix='thursday')
-        schedule_friday_form = ScheduleDayForm(instance=schedule_friday, prefix='friday')
-        schedule_saturday_form = ScheduleDayForm(instance=schedule_saturday, prefix='saturday')
-        schedule_sunday_form = ScheduleDayForm(instance=schedule_sunday, prefix='sunday')
+        #
+        # schedule_monday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.MONDAY)
+        # schedule_tuesday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.TUESDAY)
+        # schedule_wednesday_form = get_schedule_day_form(phone_config, ScheduleDay.ScheduleDayType.WEDNESDAY)
+        # schedule_thursday_form = ScheduleDayForm(instance=schedule_thursday, prefix='thursday')
+        # schedule_friday_form = ScheduleDayForm(instance=schedule_friday, prefix='friday')
+        # schedule_saturday_form = ScheduleDayForm(instance=schedule_saturday, prefix='saturday')
+        # schedule_sunday_form = ScheduleDayForm(instance=schedule_sunday, prefix='sunday')
 
     elif request.method == 'POST':
-        import ipdb; ipdb.set_trace()
-        schedule_monday_form = ScheduleDayForm(request.POST, prefix='monday')
-        schedule_tuesday_form = ScheduleDayForm(request.POST, prefix='tuesday')
-        schedule_wednesday_form = ScheduleDayForm(request.POST, prefix='wednesday')
-        schedule_thursday_form = ScheduleDayForm(request.POST, prefix='thursday')
-        schedule_friday_form = ScheduleDayForm(request.POST, prefix='friday')
-        schedule_saturday_form = ScheduleDayForm(request.POST, prefix='saturday')
-        schedule_sunday_form = ScheduleDayForm(request.POST, prefix='sunday')
+
         phone_config_form = PhoneNumberCheckConfigForm(request.POST)
         if phone_config_form.is_valid():
             PhoneNumberCheckConfig.objects.update_or_create(id=id, defaults={
@@ -51,36 +73,33 @@ def change_config_number(request, id):
                 'failure_threshold': phone_config_form.cleaned_data['failure_threshold'],
                 'test_frequency': phone_config_form.cleaned_data['test_frequency']
             })
-        if schedule_monday_form.is_valid():
-            ScheduleDay.objects.update_or_create(phone_config=phone_config, day=ScheduleDay.ScheduleDayType.MONDAY,defaults=schedule_monday_form.cleaned_data)
+
+        # schedule_monday_form = validate_and_save_schedule_day_form(
+        #     request.POST, phone_config, ScheduleDay.ScheduleDayType.MONDAY
+        # )
+        # ...
 
     context = {
         'phone_config_form': phone_config_form,
-        'schedule_monday_form': schedule_monday_form,
-        'schedule_tuesday_form': schedule_tuesday_form,
-        'schedule_wednesday_form': schedule_wednesday_form,
-        'schedule_thursday_form': schedule_thursday_form,
-        'schedule_friday_form': schedule_friday_form,
-        'schedule_saturday_form': schedule_saturday_form,
-        'schedule_sunday_form': schedule_sunday_form
+        'schedule_monday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.MONDAY),
+        'schedule_tuesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.TUESDAY),
+        'schedule_wednesday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.WEDNESDAY),
+        'schedule_thursday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.THURSDAY),
+        'schedule_friday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.FRIDAY),
+        'schedule_saturday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SATURDAY),
+        'schedule_sunday_form': schedule_form_handler(request, phone_config, ScheduleDay.ScheduleDayType.SUNDAY)
 
     }
 
-    return render(request, 'pegasus_app/schedule.html', context)
+    return render(request, 'pegasus_app/change_number.html', context)
 
 
 def home_page(request):
-    schedule_formset = SchedulesDayFormset(queryset=ScheduleDay.objects.none(),
-                                           initial=[{'day': ScheduleDay.ScheduleDayType.MONDAY},
-                                                    {'day': ScheduleDay.ScheduleDayType.TUESDAY},
-                                                    {'day': ScheduleDay.ScheduleDayType.WEDNESDAY},
-                                                    {'day': ScheduleDay.ScheduleDayType.THURSDAY},
-                                                    {'day': ScheduleDay.ScheduleDayType.FRIDAY},
-                                                    {'day': ScheduleDay.ScheduleDayType.SATURDAY},
-                                                    {'day': ScheduleDay.ScheduleDayType.SUNDAY}])
+    phone_config_form = PhoneNumberCheckConfigForm()
+    phone = PhoneNumberCheckConfig.objects.values('phone')
     if request.method == 'POST':
         phone_config_form = PhoneNumberCheckConfigForm(request.POST)
-        schedule_formset = SchedulesDayFormset(request.POST)
+        schedule_formset = ScheduleDayForm(request.POST)
         if phone_config_form.is_valid():
             phone_config = phone_config_form.save(commit=False)
             phone_config.user_plan = request.user.plan
@@ -93,8 +112,15 @@ def home_page(request):
     print(request.POST)
 
     context = {
-        'config_form': PhoneNumberCheckConfigForm,
-        'schedule_formset': schedule_formset
+        'phone': phone,
+        'phone_config_form': phone_config_form,
+        'schedule_monday_form': ScheduleDayForm(),
+        'schedule_tuesday_form': ScheduleDayForm(),
+        'schedule_wednesday_form': ScheduleDayForm(),
+        'schedule_thursday_form': ScheduleDayForm(),
+        'schedule_friday_form': ScheduleDayForm(),
+        'schedule_saturday_form': ScheduleDayForm(),
+        'schedule_sunday_form': ScheduleDayForm()
     }
 
-    return render(request, 'pegasus_app/schedule.html', context)
+    return render(request, 'pegasus_app/main.html', context)
