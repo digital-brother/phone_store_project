@@ -9,26 +9,33 @@ from pegasus_app.forms import PhoneForm, ScheduleDayForm, ScheduleDayFormset
 from pegasus_app.models import Schedule, Phone
 
 
-class PhoneCreateView(CreateView):
+class PhoneView(TemplateView):
     model = Phone
     template_name = 'phone_create.html'
     form_class = PhoneForm
+    formset_class = ScheduleDayFormset
     object = None
+
+    def get_form_and_formset(self):
+        obj_id = self.kwargs.get('phone_id', None)
+        obj = Phone.objects.filter(id=obj_id).first()
+
+        form_kwargs = {'instance': obj}
+        if self.request.method in ('POST', 'PUT'):
+            form_kwargs.update({'data': self.request.POST})
+
+        form = self.form_class(**form_kwargs)
+        formset = self.formset_class(**form_kwargs)
+        return form, formset
 
     def get(self, request, *args, **kwargs):
         """
         Handles GET requests and instantiates blank versions of the phone_form
         and its inline formsets.
         """
-        self.object = None
-        form_class = self.get_form_class()
-        phone_form = self.get_form(form_class)
-        schedule_formset = ScheduleDayFormset()
-        return self.render_to_response(
-            self.get_context_data(phone_form=phone_form,
-                                  schedule_formset=schedule_formset,
-                                  )
-        )
+        phone_form, schedule_formset = self.get_form_and_formset()
+        context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset)
+        return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         """
@@ -36,10 +43,8 @@ class PhoneCreateView(CreateView):
         formsets with the passed POST variables and then checking them for
         validity.
         """
-        self.object = None
-        form_class = self.get_form_class()
-        phone_form = self.get_form(form_class)
-        schedule_formset = ScheduleDayFormset(self.request.POST)
+        phone_form, schedule_formset = self.get_form_and_formset()
+
         if phone_form.is_valid() and schedule_formset.is_valid():
             return self.forms_valid(phone_form, schedule_formset)
         else:
@@ -53,8 +58,8 @@ class PhoneCreateView(CreateView):
         phone = phone_form.save()
         schedule_formset.save()
 
-        self.object = phone
-        return HttpResponseRedirect(self.get_success_url())
+        success_url = reverse('phone_edit', kwargs={'phone_id': phone.id})
+        return HttpResponseRedirect(success_url)
 
     def forms_invalid(self, phone_form, schedule_day_formset):
         """

@@ -1,8 +1,8 @@
 from django.urls import path
 
-from pegasus_app.views import home_page, change_config_number, PhoneView, PhoneCreateView
+from pegasus_app.views import PhoneView
 
 urlpatterns = [
-    path('number/<int:id>/', PhoneView.as_view(), name='number'),
-    path('phones/create/', PhoneCreateView.as_view(), name='phone_create'),
+    path('phones/<int:phone_id>/', PhoneView.as_view(), name='phone_edit'),
+    path('phones/create/', PhoneView.as_view(), name='phone_create'),
 ]
