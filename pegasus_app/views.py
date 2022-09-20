@@ -61,6 +61,9 @@ class PhoneView(TemplateView):
         associated AssignmentQuestion instances then redirects to success url
         """
         phone = phone_form.save()
+
+        # schedule formset is saved by hands, otherwise raises
+        # "save() prohibited to prevent data loss due to unsaved related object"
         schedules = schedule_formset.save(commit=False)
         for schedule in schedules:
             schedule.phone = phone
