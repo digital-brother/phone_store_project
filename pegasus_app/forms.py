@@ -21,6 +21,10 @@ class PhoneForm(forms.ModelForm):
 
 
 class ScheduleForm(forms.ModelForm):
+    is_active = forms.BooleanField(widget=forms.CheckboxInput)
+    open_time = forms.TimeField(label='Open', widget=forms.TextInput(attrs={'type': 'time', 'style': 'margin-bottom: 5px; padding: 4px 10px 4px 10px;'}))
+    close_time = forms.TimeField(label='Close', widget=forms.TextInput(attrs={'type': 'time', 'style': 'margin-bottom: 10px; padding: 4px 10px 4px 10px;'}))
+
     class Meta:
         model = Schedule
         fields = ['day', 'is_active', 'open_time', 'close_time']
