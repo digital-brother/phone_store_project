@@ -61,48 +61,22 @@ class PhoneView(TemplateView):
         associated AssignmentQuestion instances then redirects to success url
         """
         phone = phone_form.save()
-        schedule_formset.save()
+        schedules = schedule_formset.save(commit=False)
+        for schedule in schedules:
+            schedule.phone = phone
+            schedule.save()
+        schedule_formset.save_m2m()
 
         success_url = reverse('phone_edit', kwargs={'phone_id': phone.id})
         return HttpResponseRedirect(success_url)
 
-    def forms_invalid(self, phone_form, schedule_day_formset):
+    def forms_invalid(self, phone_form, schedule_formset):
         """
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
         """
         return self.render_to_response(
             self.get_context_data(phone_form=phone_form,
-                                  schedule_day_formset=schedule_day_formset
+                                  schedule_formset=schedule_formset
                                   )
         )
-
-#
-# class PhoneView(TemplateView):
-#     template_name = "temp.html"
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         phone_number = PhoneView.objects.first()
-#         phone_number_form = PhoneForm(instance=phone_number)
-#         context['phone_number_form'] = phone_number_form
-#
-#         schedule_formset = ScheduleDayFormset(instance=phone_number)
-#         context['schedule_formset'] = schedule_formset
-#
-#         return context
-#
-#     def post(self, request, id):
-#         phone_number = PhoneView.objects.get(id=id)
-#         # import ipdb; ipdb.set_trace()
-#         phone_number_form = PhoneForm(instance=phone_number, data=request.POST)
-#         if phone_number_form.is_valid():
-#             phone_number_form.save()
-#
-#         formset = ScheduleDayFormset(request.POST, instance=phone_number)
-#         if formset.is_valid():
-#             formset.save()
-#
-#         redirect_url = reverse('phone', args='1')
-#         return HttpResponseRedirect(redirect_url)

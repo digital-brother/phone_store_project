@@ -28,21 +28,14 @@ class Phone(models.Model):
     def __str__(self):
         return self.ima_name
 
-    def save(self, *args, **kwargs):
-        is_created = not self.pk
-        phone = super(Phone, self).save(*args, **kwargs)
-        if is_created:
-            phone.create_missing_schedules()
-        return phone
-
     def get_absolute_url(self):
         return reverse('change_config_number', kwargs={'id': self.id})
 
     def create_missing_schedules(self):
         for schedule_day_type in Schedule.Day.values:
-            schedule_day_obj = Schedule.objects.filter(phone_config=self, day=schedule_day_type).first()
+            schedule_day_obj = self.schedules.filter(day=schedule_day_type).first()
             if not schedule_day_obj:
-                Schedule.objects.create(phone_config=self, day=schedule_day_type)
+                Schedule.objects.create(phone=self, day=schedule_day_type)
 
 
 class Schedule(models.Model):
@@ -60,4 +53,4 @@ class Schedule(models.Model):
     open_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
     close_time = models.TimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
 
-    phone = models.ForeignKey(Phone, on_delete=models.CASCADE, related_name='schedules')
+    phone = models.ForeignKey(Phone, on_delete=models.CASCADE, related_name='schedules', null=True)
