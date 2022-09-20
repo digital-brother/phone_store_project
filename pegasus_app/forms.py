@@ -13,10 +13,10 @@ class PhoneForm(forms.ModelForm):
         }
 
 
-class ScheduleDayForm(forms.ModelForm):
+class ScheduleForm(forms.ModelForm):
     class Meta:
         model = Schedule
         fields = ['day', 'is_active', 'open_time', 'close_time']
 
 
-ScheduleDayFormset = inlineformset_factory(Phone, Schedule, fields='__all__', extra=7, max_num=7, can_delete=False)
+ScheduleFormset = inlineformset_factory(Phone, Schedule, form=ScheduleForm, extra=7, max_num=7, can_delete=False)

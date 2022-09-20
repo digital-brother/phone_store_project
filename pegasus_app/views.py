@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
 
-from pegasus_app.forms import PhoneForm, ScheduleDayForm, ScheduleDayFormset
+from pegasus_app.forms import PhoneForm, ScheduleForm, ScheduleFormset
 from pegasus_app.models import Schedule, Phone
 
 
@@ -13,7 +13,7 @@ class PhoneView(TemplateView):
     model = Phone
     template_name = 'phone_create.html'
     form_class = PhoneForm
-    formset_class = ScheduleDayFormset
+    formset_class = ScheduleFormset
     object = None
 
     def get_form_and_formset(self):
