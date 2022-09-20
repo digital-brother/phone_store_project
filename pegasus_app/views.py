@@ -18,7 +18,7 @@ class PhoneView(TemplateView):
 
     def get_form_and_formset(self):
         obj_id = self.kwargs.get('phone_id', None)
-        obj = Phone.objects.filter(id=obj_id).first()
+        obj = self.model.objects.filter(id=obj_id).first()
 
         form_kwargs = {'instance': obj}
         if self.request.method in ('POST', 'PUT'):
@@ -78,8 +78,5 @@ class PhoneView(TemplateView):
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
         """
-        return self.render_to_response(
-            self.get_context_data(phone_form=phone_form,
-                                  schedule_formset=schedule_formset
-                                  )
-        )
+        context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset)
+        return self.render_to_response(context)
