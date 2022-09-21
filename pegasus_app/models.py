@@ -28,9 +28,6 @@ class Phone(models.Model):
     def __str__(self):
         return self.ima_name
 
-    def get_absolute_url(self):
-        return reverse('change_config_number', kwargs={'id': self.id})
-
     def create_missing_schedules(self):
         for schedule_day_type in Schedule.Day.values:
             schedule_day_obj = self.schedules.filter(day=schedule_day_type).first()

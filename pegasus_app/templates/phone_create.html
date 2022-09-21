@@ -6,6 +6,16 @@
             margin-left: 7.255em;
         }
 
+        .schedule_time-input {
+           margin-bottom: 5px;
+           padding: 4px 10px 4px 10px;
+        }
+
+        .phone_config-inputs {
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
 </style>
 <div style="width: 83%;
     padding: 10px 30px;
@@ -19,9 +29,8 @@
                 Call check
             </button>
             <ul class="dropdown-menu">
-                {% for p in phone %}
-                {{ p.get_absolute_url }}
-                <li><a class="dropdown-item" href="{{ p.get_absolute_url }}">{{ p.phone }}</a></li>
+                {% for phone in phones_data %}
+                <li><a class="dropdown-item" href="{% url 'phone_edit' phone.id %}">{{ phone.number }}</a></li>
                 {% endfor %}
                 <li><a class="dropdown-item" href="{% url 'phone_create' %}">Add new Phone</a></li>
             </ul>
@@ -40,6 +49,7 @@
             {{ phone_form.ima_name }}
             <label>{{ phone_form.number.label }}</label>
             {{ phone_form.number }}
+            {{ phone_form.number.errors }}
             <div class="d-flex" style="justify-content: space-between; margin-bottom: 20px;">
                 <div>
                     <label>{{ phone_form.failure_threshold.label }}</label>
@@ -61,6 +71,7 @@
             </div>
         </div>
 
+        {{ phone_form.numbers.errors }}
         <hr>
 
 
@@ -69,13 +80,15 @@
             {{ schedule_formset.management_form }}
             {% for form in schedule_formset %}
             <div class="d-flex" style="flex-direction: column;  align-items: center;">
-
+                {{ form.id }}
+                <p hidden>{{ form.day }}</p>
                 {{ form.day.value|capfirst }}
                 {{ form.is_active }}
                 <label style="margin-left: -60px;">{{ form.open_time.label }}</label>
                 {{ form.open_time }}
                 <label style="margin-left: -60px;">{{ form.close_time.label }}</label>
                 {{ form.close_time }}
+                {{ form.errors }}
             </div>
             {% endfor %}
         </div>
