@@ -32,7 +32,7 @@
         </button>
         <ul class="dropdown-menu">
           {% for phone in phones_data %}
-            <li><a class="dropdown-item" href="{% url 'phone_edit' phone.id %}">{{ phone.number }}</a></li>
+            <li><a class="dropdown-item" href="{% url 'phone_edit' phone.id %}">{{ phone.ima_name }}</a></li>
           {% endfor %}
           <li><a class="dropdown-item" href="{% url 'phone_create' %}">Add new Phone</a></li>
         </ul>
