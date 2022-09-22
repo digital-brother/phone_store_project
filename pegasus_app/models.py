@@ -29,12 +29,6 @@ class Phone(models.Model):
     def __str__(self):
         return self.ima_name
 
-    def create_missing_schedules(self):
-        for schedule_day_type in Schedule.Day.values:
-            schedule_day_obj = self.schedules.filter(day=schedule_day_type).first()
-            if not schedule_day_obj:
-                Schedule.objects.create(phone=self, day=schedule_day_type)
-
 
 class Schedule(models.Model):
     class Day(models.TextChoices):
