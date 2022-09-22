@@ -41,8 +41,7 @@
 
     {% block phone_schedules_edit %}
       {% if user.can_create_phones %}
-        {{ user.can_create_phones }}
-        {% include 'phone_schedules_edit.html'
+        {% include 'phone_schedules_edit.html' %}
       {% else %}
         According to your plan you can create only {{ user.plan.max_phones_numbers }} phones maximum.
       {% endif %}
