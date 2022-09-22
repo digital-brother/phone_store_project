@@ -29,6 +29,7 @@ class PhoneBaseView(TemplateView):
             form_data['owner'] = self.request.user
             form_kwargs.update({'data': form_data})
         form = self.form_class(**form_kwargs)
+
         return form
 
     def get_formset(self):
@@ -41,6 +42,7 @@ class PhoneBaseView(TemplateView):
         elif self.request.method in ('POST', 'PUT'):
             formset_kwargs.update({'data': self.request.POST})
         formset = self.formset_class(**formset_kwargs)
+
         return formset
 
     def get_context_data(self, **kwargs):
@@ -59,7 +61,6 @@ class PhoneBaseView(TemplateView):
         Handles GET requests and instantiates blank versions of the phone_form
         and its inline formsets.
         """
-
         phone_form = self.get_form()
         schedule_formset = self.get_formset()
         context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset)
