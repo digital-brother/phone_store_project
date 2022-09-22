@@ -35,18 +35,25 @@ class PhoneView(TemplateView):
 
         return form, formset
 
-    def get(self, request, *args, **kwargs):
-        phones_data = Phone.objects.filter(owner=request.user)
-        max_count_numbers = request.user.plan.max_phones_numbers
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        phones_data = self.request.user.phones.all()
+        context['phones_data'] = phones_data
+
+        max_count_numbers = self.request.user.plan.max_phones_numbers
+        context['max_count_numbers'] = max_count_numbers
+
+        return context
+
+    def get(self, request, *args, **kwargs):
         """
         Handles GET requests and instantiates blank versions of the phone_form
         and its inline formsets.
         """
 
         phone_form, schedule_formset = self.get_form_and_formset()
-        context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset,
-                                        phones_data=phones_data, max_count_numbers=max_count_numbers)
+        context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset)
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -67,7 +74,9 @@ class PhoneView(TemplateView):
         Called if all forms are valid. Creates Assignment instance along with the
         associated AssignmentQuestion instances then redirects to success url
         """
-        phone = phone_form.save()
+        phone = phone_form.save(commit=False)
+        phone.owner = self.request.user
+        phone.save()
 
         # schedule formset is saved by hands, otherwise raises
         # "save() prohibited to prevent data loss due to unsaved related object"
