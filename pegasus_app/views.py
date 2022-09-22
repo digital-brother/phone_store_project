@@ -25,7 +25,9 @@ class PhoneBaseView(TemplateView):
 
         form_kwargs = {'instance': obj}
         if self.request.method in ('POST', 'PUT'):
-            form_kwargs.update({'data': self.request.POST})
+            form_data = self.request.POST.copy()
+            form_data['owner'] = self.request.user
+            form_kwargs.update({'data': form_data})
         form = self.form_class(**form_kwargs)
         return form
 
@@ -92,6 +94,7 @@ class PhoneBaseView(TemplateView):
         for schedule in schedules:
             schedule.phone = phone
             schedule.save()
+
         schedule_formset.save_m2m()
 
         success_url = reverse('phone_edit', kwargs={'phone_id': phone.id})
