@@ -28,13 +28,13 @@
         <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
                 aria-expanded="false"
                 style="background: white; border: rgba(0, 0, 0, 0.175) solid; border-radius: 0.375rem; padding: 10px;">
-          Call check
+          {{ active_phone.ima_name|default:"Add new phone" }}
         </button>
         <ul class="dropdown-menu">
           {% for phone in phones_data %}
             <li><a class="dropdown-item" href="{% url 'phone_edit' phone.id %}">{{ phone.ima_name }}</a></li>
           {% endfor %}
-          <li><a class="dropdown-item" href="{% url 'phone_create' %}">Add new Phone</a></li>
+          <li><a class="dropdown-item" href="{% url 'phone_create' %}">Add new phone</a></li>
         </ul>
       </div>
     </div>

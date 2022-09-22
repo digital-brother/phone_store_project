@@ -33,7 +33,7 @@ class Phone(models.Model):
     def clean(self):
         if not self.owner.can_create_phones:
             max_phone_numbers = self.owner.plan.max_phones_numbers
-            raise ValidationError(f'User cannot create more than {max_phone_numbers} phones according to his plan.')
+            raise ValidationError(f'User cannot create more than {max_phone_numbers} according to his plan.')
 
 class Schedule(models.Model):
     class Day(models.TextChoices):
