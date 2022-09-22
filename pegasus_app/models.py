@@ -7,8 +7,9 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    ...
-
+    @property
+    def can_create_phones(self):
+        return self.phones.count() < self.plan.max_phones_numbers
 
 class UserPlan(models.Model):
     max_phones_numbers = models.IntegerField()
@@ -26,15 +27,6 @@ class Phone(models.Model):
     number = PhoneNumberField()
     failure_threshold = models.IntegerField(validators=[MaxValueValidator(10)])
     test_frequency = models.IntegerField(validators=[MaxValueValidator(120)])
-
-    def clean(self):
-        count_of_numbers = self.owner.phones.count()
-        max_phones_numbers = self.owner.plan.max_phones_numbers
-
-        if count_of_numbers >= max_phones_numbers:
-            raise ValidationError(
-                "You cannot create a number. Pay attention to your Plan"
-            )
 
     def __str__(self):
         return self.ima_name

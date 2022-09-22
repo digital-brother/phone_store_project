@@ -10,7 +10,7 @@ from pegasus_app.forms import PhoneForm, ScheduleForm, ScheduleFormset
 from pegasus_app.models import Schedule, Phone, UserPlan
 
 
-class PhoneView(TemplateView):
+class PhoneCreateView(TemplateView):
     model = Phone
     template_name = 'phone_create.html'
     form_class = PhoneForm
@@ -96,3 +96,8 @@ class PhoneView(TemplateView):
         """
         context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset)
         return self.render_to_response(context)
+
+
+class PhoneEditView(PhoneCreateView):
+    template_name = 'phone_edit.html'
+
