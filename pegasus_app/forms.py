@@ -56,13 +56,9 @@ class ScheduleForm(forms.ModelForm):
             if open_time in EMPTY_VALUES:
                 self._errors['open_time'] = self.error_class([
                     'Open time required here'])
-            else:
-                self.cleaned_data['open_time']
             if close_time in EMPTY_VALUES:
                 self._errors['close_time'] = self.error_class([
                     'Close time required here'])
-            else:
-                self.cleaned_data['close_time']
 
         return self.cleaned_data
 
