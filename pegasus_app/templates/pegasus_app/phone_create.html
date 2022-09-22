@@ -1,0 +1,52 @@
+{% extends 'pegasus_app/base.html' %}
+
+{% block body %}
+  <style>
+      .dropdown-toggle::after {
+          margin-left: 7.255em;
+      }
+
+      .schedule_time-input {
+          margin-bottom: 5px;
+          padding: 4px 10px 4px 10px;
+      }
+
+      .phone_config-inputs {
+          width: 300px;
+          margin-bottom: 20px;
+      }
+
+  </style>
+  <div style="padding: 10px 30px;
+    box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
+    margin: 10px;
+    overflow: hidden;
+    height: 100vh;">
+    <div class="d-flex" style="align-items: center;">
+      <h1 style="margin-right: 80px">Verify Phone</h1>
+      <div class="dropdown">
+        <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false"
+                style="background: white; border: rgba(0, 0, 0, 0.175) solid; border-radius: 0.375rem; padding: 10px;">
+          {{ active_phone.ima_name|default:"Add new phone" }}
+        </button>
+        <ul class="dropdown-menu">
+          {% for phone in phones_data %}
+            <li><a class="dropdown-item" href="{% url 'phone_edit' phone.id %}">{{ phone.ima_name }}</a></li>
+          {% endfor %}
+          <li><a class="dropdown-item" href="{% url 'phone_create' %}">Add new phone</a></li>
+        </ul>
+      </div>
+    </div>
+
+    {% block phone_schedules_edit %}
+      {% if user.can_create_phones %}
+        {% include 'pegasus_app/phone_schedules_edit.html' %}
+      {% else %}
+        According to your plan you can create only {{ user.plan.max_phones_numbers }} phones maximum.
+      {% endif %}
+
+    {% endblock %}
+
+  </div>
+{% endblock %}
