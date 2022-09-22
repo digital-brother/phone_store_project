@@ -24,9 +24,7 @@ class PhoneView(TemplateView):
 
         form_kwargs = {'instance': obj}
         if self.request.method in ('POST', 'PUT'):
-            data = self.request.POST.copy()
-            data['owner'] = self.request.user
-            form_kwargs.update({'data': data})
+            form_kwargs.update({'data': self.request.POST})
         form = self.form_class(**form_kwargs)
 
         formset_kwargs = form_kwargs.copy()
