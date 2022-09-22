@@ -85,9 +85,7 @@ class PhoneBaseView(TemplateView):
         Called if all forms are valid. Creates Assignment instance along with the
         associated AssignmentQuestion instances then redirects to success url
         """
-        phone = phone_form.save(commit=False)
-        phone.owner = self.request.user
-        phone.save()
+        phone = phone_form.save()
 
         # schedule formset is saved by hands, otherwise raises
         # "save() prohibited to prevent data loss due to unsaved related object"
