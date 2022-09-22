@@ -17,10 +17,11 @@
         }
 
 </style>
-<div style="width: 83%;
-    padding: 10px 30px;
+<div style="padding: 10px 30px;
     box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
-    margin-top: 10px;">
+    margin: 10px;
+    overflow: hidden;
+    height: 100vh;">
     <div class="d-flex" style="align-items: center;">
         <h1 style="margin-right: 80px">Verify Phone</h1>
         <div class="dropdown">
@@ -36,7 +37,10 @@
             </ul>
         </div>
     </div>
-    <form action="." method="post">
+    {% if phones_data|length >= max_count_numbers %}
+        <h1 style="list-style: none">ERROR!!!</h1>
+        {% else %}
+            <form action="." method="post">
         {% csrf_token %}
 
         <div class="d-flex" style="margin-bottom: 10px;">
@@ -72,11 +76,12 @@
         </div>
 
         {{ phone_form.numbers.errors }}
+
         <hr>
 
 
         <h4>Scheduling</h4>
-        <div class="d-flex" style=" justify-content: space-between;">
+        <div class="d-flex" style="justify-content: space-between; overflow: hidden;">
             {{ schedule_formset.management_form }}
             {% for form in schedule_formset %}
             <div class="d-flex" style="flex-direction: column;  align-items: center;">
@@ -86,9 +91,10 @@
                 {{ form.is_active }}
                 <label style="margin-left: -60px;">{{ form.open_time.label }}</label>
                 {{ form.open_time }}
+                {{ form.errors.open_time }}
                 <label style="margin-left: -60px;">{{ form.close_time.label }}</label>
                 {{ form.close_time }}
-                {{ form.errors }}
+                {{ form.errors.close_time }}
             </div>
             {% endfor %}
         </div>
@@ -98,6 +104,8 @@
                value="SUBMIT">
 
     </form>
+
+    {% endif %}
 
 </div>
 {% endblock %}

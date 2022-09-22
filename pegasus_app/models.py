@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
@@ -20,10 +21,20 @@ class UserPlan(models.Model):
 
 
 class Phone(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='phones')
     ima_name = models.CharField(max_length=64)
     number = PhoneNumberField()
     failure_threshold = models.IntegerField(validators=[MaxValueValidator(10)])
     test_frequency = models.IntegerField(validators=[MaxValueValidator(120)])
+
+    def clean(self):
+        count_of_numbers = self.owner.phones.count()
+        max_phones_numbers = self.owner.plan.max_phones_numbers
+
+        if count_of_numbers >= max_phones_numbers:
+            raise ValidationError(
+                "You cannot create a number. Pay attention to your Plan"
+            )
 
     def __str__(self):
         return self.ima_name
