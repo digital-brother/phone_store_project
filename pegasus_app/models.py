@@ -1,9 +1,7 @@
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator
 from django.db import models
-from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
-from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):

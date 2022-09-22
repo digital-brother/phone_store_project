@@ -1,5 +1,4 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from django.core.validators import EMPTY_VALUES
 from django.forms import inlineformset_factory
 
@@ -18,16 +17,6 @@ class PhoneForm(forms.ModelForm):
             'test_frequency': forms.TextInput(attrs={'type': 'range', 'min': '10', 'max': '120', 'step': '5',
                                                      'oninput': 'id_output_test_frequency.value = id_test_frequency.value'})
         }
-
-    # def __init__(self, request, *args, **kwargs):
-    #     self.request = kwargs.pop('request', None)
-    #     super(PhoneForm, self).__init__(*args, **kwargs)
-    #
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     user = self.request.user
-    #     print(user)
-    #     return cleaned_data
 
 
 class ScheduleForm(forms.ModelForm):

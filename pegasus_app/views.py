@@ -1,13 +1,10 @@
-from django.core.exceptions import ValidationError
-from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import TemplateView
 
-from pegasus_app.forms import PhoneForm, ScheduleForm, ScheduleFormset
-from pegasus_app.models import Schedule, Phone, UserPlan
+from pegasus_app.forms import PhoneForm, ScheduleFormset
+from pegasus_app.models import Schedule, Phone
 
 
 class PhoneBaseView(TemplateView):
