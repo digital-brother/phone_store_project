@@ -18,22 +18,28 @@ class PhoneBaseView(TemplateView):
 
     object = None
 
-    def get_form_and_formset(self):
+    def get_object(self):
         obj_id = self.kwargs.get('phone_id', None)
         obj = self.model.objects.filter(id=obj_id).first()
+        return obj
 
+    def get_form(self):
+        obj = self.get_object()
         form_kwargs = {'instance': obj}
         if self.request.method in ('POST', 'PUT'):
             form_kwargs.update({'data': self.request.POST})
         form = self.form_class(**form_kwargs)
+        return form
 
-        formset_kwargs = form_kwargs.copy()
+    def get_formset(self):
+        obj = self.get_object()
+
+        formset_kwargs = {'instance': obj}
         if self.request.method == 'GET':
             initial = [{'day': day_value} for day_value in Schedule.Day.values]
             formset_kwargs.update({'initial': initial})
         formset = self.formset_class(**formset_kwargs)
-
-        return form, formset
+        return formset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,7 +58,8 @@ class PhoneBaseView(TemplateView):
         and its inline formsets.
         """
 
-        phone_form, schedule_formset = self.get_form_and_formset()
+        phone_form = self.get_form()
+        schedule_formset = self.get_formset()
         context = self.get_context_data(phone_form=phone_form, schedule_formset=schedule_formset)
         return self.render_to_response(context)
 
@@ -62,7 +69,8 @@ class PhoneBaseView(TemplateView):
         formsets with the passed POST variables and then checking them for
         validity.
         """
-        phone_form, schedule_formset = self.get_form_and_formset()
+        phone_form = self.get_form()
+        schedule_formset = self.get_formset()
 
         if phone_form.is_valid() and schedule_formset.is_valid():
             return self.forms_valid(phone_form, schedule_formset)
