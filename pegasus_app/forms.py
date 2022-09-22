@@ -47,10 +47,8 @@ class ScheduleForm(forms.ModelForm):
         }
 
     def clean(self):
-        # import ipdb; ipdb.set_trace()
         is_active = self.cleaned_data.get('is_active', False)
         if is_active:
-            # validate the activity name
             open_time = self.cleaned_data.get('open_time', None)
             close_time = self.cleaned_data.get('close_time', None)
             if open_time in EMPTY_VALUES:
