@@ -110,8 +110,8 @@ class PhoneBaseView(TemplateView):
 
 
 class PhoneCreateView(PhoneBaseView):
-    template_name = 'phone_create.html'
+    template_name = 'pegasus_app/phone_create.html'
 
 
 class PhoneEditView(PhoneBaseView):
-    template_name = 'phone_edit.html'
+    template_name = 'pegasus_app/phone_edit.html'

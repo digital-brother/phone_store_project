@@ -10,6 +10,7 @@ class User(AbstractUser):
     def can_create_phones(self):
         return self.phones.count() < self.plan.max_phones_numbers
 
+
 class UserPlan(models.Model):
     max_phones_numbers = models.IntegerField()
     name = models.CharField(max_length=32)
@@ -34,6 +35,7 @@ class Phone(models.Model):
         if not self.owner.can_create_phones:
             max_phone_numbers = self.owner.plan.max_phones_numbers
             raise ValidationError(f'User cannot create more than {max_phone_numbers} according to his plan.')
+
 
 class Schedule(models.Model):
     class Day(models.TextChoices):
